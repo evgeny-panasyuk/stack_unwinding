@@ -44,12 +44,17 @@ class unwinding_indicator
 {
 #if defined(UNCAUGHT_EXCEPTION_COUNT_SUPPORTED)
 private:
-    unsigned enter_state;
+    unsigned enter_state; // TODO: possibly to store and compare only last bit of uncaught exceptions count,
+                          //       in order to reduce size, check this
 public:
     unwinding_indicator() : enter_state(uncaught_exception_count()) {}
     bool unwinding()
     {
-        return enter_state!=uncaught_exception_count();
+        return enter_state!=uncaught_exception_count(); // TODO: looks like wrong result is possible for "floating" objects,
+                                                        //       i.e. object created during stack unwinding, which
+                                                        //       outlived unwinding process.
+                                                        //       Describe limitation in interface or develop better solution
+                                                        //       (maybe inspecting call stack for caller)
     }
     bool probably_unwinding()
     {
