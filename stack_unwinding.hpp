@@ -38,6 +38,8 @@ namespace stack_unwinding
 unsigned uncaught_exception_count();
 #endif
 
+// TODO: describe interface/preconditions. For instance, maybe with another underlying implementation
+//       capturing of state will be not needed - so, maybe users should use empty base class optimization.
 class unwinding_indicator
 {
 #if defined(UNCAUGHT_EXCEPTION_COUNT_SUPPORTED)
