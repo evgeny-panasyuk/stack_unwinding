@@ -46,10 +46,13 @@ Boost.ScopeExit is similar to scope(exit) feature built into the D programming l
 A curious reader may notice that the library does not implement scope(success) and scope(failure) of the D language. Unfortunately, these are not possible in C++ because failure or success conditions cannot be determined by calling std::uncaught_exception (see Guru of the Week #47 for details about std::uncaught_exception and if it has any good use at all). However, this is not a big problem because these two D's constructs can be expressed in terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section). 
 "
 
-Refer:
-http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html
-http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D
-http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758
+References
+==========
+
+* http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html
+* http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D
+* http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758
+* http://www.gotw.ca/gotw/047.htm
 
 Current library status: ALPHA
 =============================
