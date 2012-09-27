@@ -40,11 +40,18 @@ This library has example implementations of "scope(success)" and "scope(failure)
 
 Boost has "Scope Exit" library which in examples shows using of commiting by hands.
 Some quote from Boost.ScopeExit manual:
-"
+```
 Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
 
-A curious reader may notice that the library does not implement scope(success) and scope(failure) of the D language. Unfortunately, these are not possible in C++ because failure or success conditions cannot be determined by calling std::uncaught_exception (see Guru of the Week #47 for details about std::uncaught_exception and if it has any good use at all). However, this is not a big problem because these two D's constructs can be expressed in terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section). 
-"
+A curious reader may notice that the library does not implement scope(success)
+and scope(failure) of the D language.
+Unfortunately, these are not possible in C++ because failure or success conditions
+cannot be determined by calling std::uncaught_exception (see Guru of the Week #47 for
+details about std::uncaught_exception and if it has any good use at all).
+However, this is not a big problem because these two D's constructs can be expressed in
+terms of scope(exit) and a bool commit variable
+(similarly to some examples presented in the Tutorial section).
+```
 
 References
 ==========
