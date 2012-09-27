@@ -69,6 +69,7 @@ Current library status: ALPHA
 * MSVC 2010: tested on x32 and x64, default settings
 * MSVC 2012: tested on x32 and x64, default settings
 * GCC 4.1.2: tested on x32 and x64, default settings
+* GCC 4.4.6: tested on x32 and x64, default settings
 * Clang 3.2:  tested on x32 and x64, default settings
 
 
