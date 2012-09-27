@@ -30,7 +30,6 @@ D langauge has scope(success) and scope(failure) which are simmilar in something
 This library has example implementations of "scope(success)" and "scope(failure)":
 ```Ñ++
 {
-    cout << "Case #1: stack unwinding" << endl;
     scope_action exit=make<scope_exit>(Print(" exit"));
     scope_action failure=make<scope_failure>(Print(" failure")); 
     scope_action success=make<scope_success>(Print(" success"));
