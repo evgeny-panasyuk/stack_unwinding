@@ -45,13 +45,13 @@ private:
     unsigned enter_state;
 public:
     unwinding_indicator() : enter_state(uncaught_exception_count()) {}
-    bool probably_unwinding()
-    {
-        return enter_state!=uncaught_exception_count();
-    }
     bool unwinding()
     {
         return enter_state!=uncaught_exception_count();
+    }
+    bool probably_unwinding()
+    {
+        return unwinding();
     }
 #else
 public:
