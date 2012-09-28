@@ -31,7 +31,7 @@ As rule of dumb, use throwing destructors only in classes not intended to be agg
 D-style Scope Guards/Actions
 ============================
 
-More generally it helps to develop "advanced" Scope Guard [1], which respects exceptions from destructors, and does not require calling of release/commit by hands.
+More generally this library helps to develop "advanced" Scope Guard [1], which respects exceptions from destructors, and does not require calling of release/commit by hands.
 D langauge has scope(success) and scope(failure) [2] which are simmilar in something to that "advanced" Scope Guard semantic.
 
 This library has example implementations of "scope(success)" and "scope(failure)":
@@ -68,10 +68,10 @@ uncaught_exception_count is a function similar to std::uncaught_exception [4] fr
 References
 ==========
 
-1. http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758
-2. http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D
-3. http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html
-4. http://www.gotw.ca/gotw/047.htm
+1. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code — Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
+2. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
+3. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
+4. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
 
 Caution
 =======
