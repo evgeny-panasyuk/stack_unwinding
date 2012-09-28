@@ -33,7 +33,11 @@ struct ExptSwallower
 class DLikeScopeGuard
 {
     stack_unwinding::unwinding_indicator indicator;
+
+    DLikeScopeGuard(const DLikeScopeGuard&);
+    DLikeScopeGuard &operator=(const DLikeScopeGuard&);
 public:
+    DLikeScopeGuard(){}
     void scope_success()
     {
         cout << "scope_success" << endl;
