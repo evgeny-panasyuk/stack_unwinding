@@ -3,10 +3,10 @@ stack_unwinding
 
 The stack_unwinding is a small header only C++ library which supplies primitive(class unwinding_indicator) to determining when object destructor is called due to stack-unwinding or due to normal scope leaving.
 
-Introduction
-============
+Throwing Destructors which are not Terminators
+==============================================
 
-This library helps to find out when it is really dangerous to throw exception from destructor. I.e. when throwing exception may lead to call std::terminate.
+One of uses cases of this library is to check when throwing exception from destructor may lead to call std::terminate, because destructor was called due to stack unwinding.
 As the result, we may achieve exactly same effect as manually placing “.close()” at end of scope automaticly.
 ```Ñ++
 {
@@ -23,9 +23,16 @@ would became
    // ...
 }
 ```
+Note, there are cases when destructor is not called due to stack unwinding, but throwing exception from it may lead to unintended consequences. For instance, most of C++ code assumes non-throwing destructors. (TODO: add note about built-in arrays, STL, + references to ISO)
+Be aware of transitive nature of objects throwing destructors - if some class A aggregates or inherits class B which may throw in destructor, then class A also may throw on destruction, and as the consequence all classes that aggreagate or inherit A may throw on destruction, and so on.
+(Aggregation without turning aggregator's destruction into throwable is still possible, but requires explicit managing of construction and destruction of aggregate, for instance with help of placement new and explicit destructor call, or just new/delete. In that case you should swallow all exceptions from destructor.)
+As rule of dumb, use throwing destructors only in classes not intended to be aggregated or inherited, i.e. classes which lives only in code scope.
 
-More generally it helps to develop "advanced" Scope Guard, which respects exceptions from destructors, and does not require calling of release/commit by hands.
-D langauge has scope(success) and scope(failure) which are simmilar in something to that "advanced" Scope Guard semantic.
+D-style Scope Guards/Actions
+============================
+
+More generally it helps to develop "advanced" Scope Guard [1], which respects exceptions from destructors, and does not require calling of release/commit by hands.
+D langauge has scope(success) and scope(failure) [2] which are simmilar in something to that "advanced" Scope Guard semantic.
 
 This library has example implementations of "scope(success)" and "scope(failure)":
 ```Ñ++
@@ -37,7 +44,7 @@ This library has example implementations of "scope(success)" and "scope(failure)
 }
 ```
 
-Boost has "Scope Exit" library which in examples shows using of commiting by hands.
+Boost has "Scope Exit" library [3] which in examples shows using of commiting by hands.
 Some quote from Boost.ScopeExit manual:
 ```
 Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
@@ -52,13 +59,19 @@ terms of scope(exit) and a bool commit variable
 (similarly to some examples presented in the Tutorial section).
 ```
 
+Implementation details
+======================
+
+Currently library is implemented on top of platform-specific implementation of uncaught_exception_count function.
+uncaught_exception_count is a function similar to std::uncaught_exception [4] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
+
 References
 ==========
 
-* http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html
-* http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D
-* http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758
-* http://www.gotw.ca/gotw/047.htm
+1. http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758
+2. http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D
+3. http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html
+4. http://www.gotw.ca/gotw/047.htm
 
 Caution
 =======
@@ -75,13 +88,6 @@ Current library status: ALPHA
 * GCC 4.1.2: tested on x32 and x64, default settings
 * GCC 4.4.6: tested on x32 and x64, default settings
 * Clang 3.2:  tested on x32 and x64, default settings
-
-
-Implementation details
-======================
-
-Currently library is implemented on top of platform-specific implementation of uncaught_exception_count function.
-uncaught_exception_count is a function similar to std::uncaught_exception from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
 
 About
 ======
