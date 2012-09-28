@@ -60,6 +60,11 @@ References
 * http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758
 * http://www.gotw.ca/gotw/047.htm
 
+Caution
+=======
+
+TODO: describe pitfalls
+
 Current library status: ALPHA
 =============================
 
