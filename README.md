@@ -86,7 +86,7 @@ uncaught_exception_count is a function similar to std::uncaught_exception from s
 About
 ======
 
-* Author: Evgeny Panasyuk
+* Author: Evgeny Panasyuk (e-mail: E?????[dot]P???????[at]gmail.???)
 * Initial Release Date: 27/09/2012
 
 License
