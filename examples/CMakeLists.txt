@@ -20,4 +20,6 @@ example(file_throwing_dtor)
 example(uncaught_exception_count)
 example(scope_guard)
 example(scope_actions)
+example(example_from_dlang_dot_org)
+
 
