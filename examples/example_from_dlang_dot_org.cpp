@@ -8,11 +8,11 @@
 using namespace stack_unwinding;
 using namespace std;
 
-class write
+class Write
 {
     std::string str_;
 public:
-    write(const std::string &str): str_(str){}
+    explicit Write(const std::string &str): str_(str){}
     void operator()() const
     {
         cout << str_;
@@ -21,8 +21,8 @@ public:
 
 struct Foo
 {
-    Foo() { write("0")(); }
-    ~Foo() { write("1")(); }
+    Foo() { Write("0")(); }
+    ~Foo() { Write("1")(); }
 };
 void func_throw(int i)
 {
@@ -34,34 +34,34 @@ int main(int,char *[])
     Refer http://dlang.org/statement.html#ScopeGuardStatement
     Example in D language:
     class Foo {
-        this(){ write("0"); }
-        ~this() { write("1"); }
+        this(){ Write("0"); }
+        ~this() { Write("1"); }
     }
     try {
-        scope(exit) write("2");
-        scope(success) write("3");
+        scope(exit) Write("2");
+        scope(success) Write("3");
         scope Foo f = new Foo();
-        scope(failure) write("4");
+        scope(failure) Write("4");
         throw new Exception("msg");
-        scope(exit) write("5");
-        scope(success) write("6");
-        scope(failure) write("7");
+        scope(exit) Write("5");
+        scope(success) Write("6");
+        scope(failure) Write("7");
     }
     catch (Exception e) { }
-    writeln();
+    Writeln();
 
-    writes: 0412
+    Writes: 0412
 */
     try
     {   // need more syntactic sugar: UNIQUE_NAME macro, maybe boost::function, etc, etc..
-        scope_action a=make<scope_exit>(write("2"));
-        scope_action b=make<scope_success>(write("3"));
+        scope_action a=make<scope_exit>(Write("2"));
+        scope_action b=make<scope_success>(Write("3"));
         Foo c;
-        scope_action d=make<scope_failure>(write("4"));
+        scope_action d=make<scope_failure>(Write("4"));
         func_throw(1); // unreachiable warnings prevention
-        scope_action e=make<scope_exit>(write("5"));
-        scope_action f=make<scope_success>(write("6"));
-        scope_action g=make<scope_failure>(write("7"));
+        scope_action e=make<scope_exit>(Write("5"));
+        scope_action f=make<scope_success>(Write("6"));
+        scope_action g=make<scope_failure>(Write("7"));
 
         (void)a;(void)b;(void)c;(void)d;(void)e;(void)f;(void)g; // unused warnings prevention
     }
