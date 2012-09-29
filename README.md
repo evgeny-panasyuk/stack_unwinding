@@ -6,8 +6,30 @@ The stack_unwinding is a small header only C++ library which supplies primitive(
 Throwing Destructors which are not Terminators
 ==============================================
 
-One of uses cases of this library is to check when throwing exception from destructor may lead to call std::terminate, because destructor was called due to stack unwinding.
-As the result, we may achieve exactly same effect as manually placing “.close()” at end of scope automaticly.
+One of uses cases of this library is to check when throwing exception from destructor may lead to call std::terminate, because destructor was called due to stack unwinding. That will allow use to write destructors, which are not terminators:
+```Ñ++
+class NotTerminator
+{
+    stack_unwinding::unwinding_indicator indicator;
+public:
+    void something_throwable()
+    {
+        throw 0;
+    }
+    ~NotTerminator()
+    {
+            if(indicator.unwinding())
+            {
+                try { something_throwable(); } catch(...) {}
+            }
+            else
+            {
+                something_throwable();
+            }
+    }
+};
+```
+As the result, we may achieve exactly same effect as manually placing "f.close()" [1] at end of scope automaticly.
 ```Ñ++
 {
    File a,b;
@@ -24,15 +46,18 @@ would became
 }
 ```
 Note, there are cases when destructor is not called due to stack unwinding, but throwing exception from it may lead to unintended consequences. For instance, most of C++ code assumes non-throwing destructors. (TODO: add note about built-in arrays, STL, + references to ISO)
+
 Be aware of transitive nature of objects throwing destructors - if some class A aggregates or inherits class B which may throw in destructor, then class A also may throw on destruction, and as the consequence all classes that aggreagate or inherit A may throw on destruction, and so on.
+
 (Aggregation without turning aggregator's destruction into throwable is still possible, but requires explicit managing of construction and destruction of aggregate, for instance with help of placement new and explicit destructor call, or just new/delete. In that case you should swallow all exceptions from destructor.)
+
 As rule of dumb, use throwing destructors only in classes not intended to be aggregated or inherited, i.e. classes which lives only in code scope.
 
 D-style Scope Guards/Actions
 ============================
 
-More generally this library helps to develop "advanced" Scope Guard [1], which respects exceptions from destructors, and does not require calling of release/commit by hands.
-D langauge has scope(success) and scope(failure) [2] which are simmilar in something to that "advanced" Scope Guard semantic.
+More generally this library helps to develop "advanced" Scope Guard [2], which respects exceptions from destructors, and does not require calling of release/commit by hands.
+D langauge has scope(success) and scope(failure) [3] which are simmilar in something to that "advanced" Scope Guard semantic.
 
 This library has example implementations of "scope(success)" and "scope(failure)":
 ```Ñ++
@@ -44,34 +69,32 @@ This library has example implementations of "scope(success)" and "scope(failure)
 }
 ```
 
-Boost has "Scope Exit" library [3] which in examples shows using of commiting by hands.
+Boost has "Scope Exit" library [4] which in examples shows using of commiting by hands.
 Some quote from Boost.ScopeExit manual:
 ```
 Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
 
-A curious reader may notice that the library does not implement scope(success)
-and scope(failure) of the D language.
-Unfortunately, these are not possible in C++ because failure or success conditions
-cannot be determined by calling std::uncaught_exception (see Guru of the Week #47 for
-details about std::uncaught_exception and if it has any good use at all).
+A curious reader may notice that the library does not implement scope(success) and
+scope(failure) of the D language. Unfortunately, these are not possible in C++ because
+failure or success conditions cannot be determined by calling std::uncaught_exception
+(see Guru of the Week #47 for details about std::uncaught_exception and if it has any good use at all).
 However, this is not a big problem because these two D's constructs can be expressed in
-terms of scope(exit) and a bool commit variable
-(similarly to some examples presented in the Tutorial section).
+terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section).
 ```
 
 Implementation details
 ======================
 
 Currently library is implemented on top of platform-specific implementation of uncaught_exception_count function.
-uncaught_exception_count is a function similar to std::uncaught_exception [4] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
+uncaught_exception_count is a function similar to std::uncaught_exception [1] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
 
 References
 ==========
 
-1. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code — Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
-2. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
-3. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
-4. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
+1. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
+2. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code — Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
+3. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
+4. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
 
 Caution
 =======

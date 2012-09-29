@@ -9,28 +9,29 @@ using namespace std;
 class File
 {
     stack_unwinding::unwinding_indicator indicator;
+    bool tried_close;
 public:
+    File() : tried_close(false) {}
     void close()
     {
+        cout << "trying close" << endl;
+        tried_close=true;
         throw 1;
     }
     ~File()
     {
-        if(indicator.unwinding())
+        const bool unwinding=indicator.unwinding();
+        cout << "~File(): " << (unwinding ? "can't throw" : "can throw") << endl;
+        if(!tried_close)
         {
-            cout << "~File(): can't throw" << endl;
-            try
+            if(unwinding)
+            {
+                try { close(); } catch(...) {}
+            }
+            else
             {
                 close();
             }
-            catch(...)
-            {
-            }
-        }
-        else
-        {
-            cout << "~File(): can throw" << endl;
-            close();
         }
     }
 };
@@ -38,8 +39,8 @@ public:
 int main(int,char *[])
 {
     try
-    { // new-style
-        cout << "---------Case #1:" << endl;
+    {
+        cout << "---------Case #1: new-style, throwing destructors" << endl;
         File a,b;
         // ...
     }
@@ -49,23 +50,26 @@ int main(int,char *[])
     }
 
     try
-    { // old-syle
-        cout << "---------Case #2:" << endl;
+    {
+        cout << "---------Case #2: old-style, manual close" << endl;
         File a,b;
         // ...
         a.close();
         b.close();
     }
-    catch(int){}
+    catch(int)
+    {
+        cout << "Handling single failure" << endl;
+    }
 
     try
     { // But if we want to handle each failure explicitly,
       //  then we will have same solution for old and new style:
-        cout << "---------Case #3:" << endl;
+        cout << "---------Case #3: handling each failure explicitly" << endl;
         File a,b;
         // ...
         try { a.close(); } catch(int) { cout << "Handling faulure in a" << endl;}
-        try { a.close(); } catch(int) { cout << "Handling faulure in b" << endl;}
+        try { b.close(); } catch(int) { cout << "Handling faulure in b" << endl;}
     }
     catch(int)
     {
