@@ -57,7 +57,7 @@ D-style Scope Guards/Actions
 ============================
 
 More generally this library helps to develop "advanced" Scope Guard [2], which respects exceptions from destructors, and does not require calling of release/commit by hands.
-D langauge has scope(success) and scope(failure) [3] which are simmilar in something to that "advanced" Scope Guard semantic.
+D langauge has scope(success) and scope(failure) [3,4] which are simmilar in something to that "advanced" Scope Guard semantic.
 
 This library has example implementations of "scope(success)" and "scope(failure)":
 ```C++
@@ -69,7 +69,7 @@ This library has example implementations of "scope(success)" and "scope(failure)
 }
 ```
 
-Boost has "Scope Exit" library [4] which in examples shows using of commiting by hands.
+Boost has "Scope Exit" library [5] which in examples shows using of commiting by hands.
 Some quote from Boost.ScopeExit manual:
 ```
 Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
@@ -94,7 +94,8 @@ References
 1. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
 2. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code - Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
 3. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
-4. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
+4. [D Programming Language. Scope Guard Statement](http://dlang.org/statement.html#ScopeGuardStatement)
+5. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
 
 Caution
 =======
