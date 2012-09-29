@@ -7,7 +7,7 @@ Throwing Destructors which are not Terminators
 ==============================================
 
 One of uses cases of this library is to check when throwing exception from destructor may lead to call std::terminate, because destructor was called due to stack unwinding. That will allow use to write destructors, which are not terminators:
-```Ñ++
+```C++
 class NotTerminator
 {
     stack_unwinding::unwinding_indicator indicator;
@@ -30,7 +30,7 @@ public:
 };
 ```
 As the result, we may achieve exactly same effect as manually placing "f.close()" [1] at end of scope automaticly.
-```Ñ++
+```C++
 {
    File a,b;
    // ...
@@ -39,7 +39,7 @@ As the result, we may achieve exactly same effect as manually placing "f.close()
 }
 ```
 would became
-```Ñ++
+```C++
 {
    File a,b;
    // ...
@@ -60,11 +60,11 @@ More generally this library helps to develop "advanced" Scope Guard [2], which r
 D langauge has scope(success) and scope(failure) [3] which are simmilar in something to that "advanced" Scope Guard semantic.
 
 This library has example implementations of "scope(success)" and "scope(failure)":
-```Ñ++
+```C++
 {
-    scope_action exit=make<scope_exit>(Print(" exit"));
-    scope_action failure=make<scope_failure>(Print(" failure")); 
-    scope_action success=make<scope_success>(Print(" success"));
+    scope_action exit = make<scope_exit>( Print("exit") );
+    scope_action failure = make<scope_failure>( Print("failure") );
+    scope_action success = make<scope_success>( Print("success") );
     throw 1;
 }
 ```
@@ -92,7 +92,7 @@ References
 ==========
 
 1. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
-2. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code — Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
+2. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code - Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
 3. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
 4. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
 
