@@ -29,6 +29,21 @@ public:
     }
 };
 ```
+Or shorter version, using macro DESTRUCTOR_BUT_NOT_TERMINATOR:
+```C++
+class NotTerminator
+{
+public:
+    void something_throwable()
+    {
+        throw 0;
+    }
+    DESTRUCTOR_BUT_NOT_TERMINATOR(NotTerminator)
+    {
+        something_throwable();
+    }
+};
+```
 As the result, we may achieve exactly same effect as manually placing "f.close()" [1] at end of scope automaticly.
 ```C++
 {
