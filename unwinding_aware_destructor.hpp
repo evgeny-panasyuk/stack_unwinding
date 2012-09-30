@@ -34,8 +34,7 @@
 // Put it into access specifier where you want to place your destructor.
 // After this macro, access specifier is set to private
 #define UNWINDING_AWARE_DESTRUCTOR(TYPE,UNWINDING_PARAM_NAME) \
-    ~TYPE() \
-    { stack_unwinding_aware_destructor_##TYPE_##UNWINDING_PARAM_NAME(this->stack_unwinding_indicator_##TYPE_##UNWINDING_PARAM_NAME.unwinding()); } \
+    UNWINDING_AWARE_DESTRUCTOR_IMPL(TYPE,UNWINDING_PARAM_NAME) \
     private: \
     stack_unwinding::unwinding_indicator stack_unwinding_indicator_##TYPE_##UNWINDING_PARAM_NAME; \
     void stack_unwinding_aware_destructor_##TYPE_##UNWINDING_PARAM_NAME(bool UNWINDING_PARAM_NAME)
@@ -50,8 +49,15 @@
 
 // Note: defines non-inline functions
 #define UNWINDING_AWARE_DESTRUCTOR_OUT_OF_CLASS_DEF(TYPE,UNWINDING_PARAM_NAME) \
-    TYPE::~TYPE() \
-    { stack_unwinding_aware_destructor_##TYPE_##UNWINDING_PARAM_NAME(this->stack_unwinding_indicator_##TYPE_##UNWINDING_PARAM_NAME.unwinding()); } \
+    TYPE:: UNWINDING_AWARE_DESTRUCTOR_IMPL(TYPE,UNWINDING_PARAM_NAME) \
     void TYPE::stack_unwinding_aware_destructor_##TYPE_##UNWINDING_PARAM_NAME(bool UNWINDING_PARAM_NAME)
+
+
+// internal details:
+#define UNWINDING_AWARE_DESTRUCTOR_IMPL(TYPE,UNWINDING_PARAM_NAME) \
+    ~TYPE() \
+    { \
+        stack_unwinding_aware_destructor_##TYPE_##UNWINDING_PARAM_NAME(this->stack_unwinding_indicator_##TYPE_##UNWINDING_PARAM_NAME.unwinding()); \
+    }
 
 #endif

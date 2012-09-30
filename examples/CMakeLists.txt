@@ -23,4 +23,5 @@ example(scope_actions)
 example(example_from_dlang_dot_org)
 example(unwinding_aware_destructor)
 example(destructor_but_not_terminator)
+example(two_stage_destructor)
 

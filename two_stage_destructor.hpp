@@ -24,43 +24,66 @@
 
 // e-mail: E?????[dot]P???????[at]gmail.???
 
-#ifndef DESTRUCTOR_BUT_NOT_TERMINATOR_HPP
-#define DESTRUCTOR_BUT_NOT_TERMINATOR_HPP
+#ifndef TWO_STAGE_DESTRUCTOR_HPP
+#define TWO_STAGE_DESTRUCTOR_HPP
 
 #include <stack_unwinding.hpp>
+
 
 // Note: function-try-block for "destructor but not terminator" does not catch exceptions from bases or members
 
 // Put it into access specifier where you want to place your destructor.
 // After this macro, access specifier is set to private
-#define DESTRUCTOR_BUT_NOT_TERMINATOR(TYPE) \
-    DESTRUCTOR_BUT_NOT_TERMINATOR_IMPL(TYPE) \
+#define TWO_STAGE_DESTRUCTOR_RELEASE(TYPE) \
+    TWO_STAGE_DESTRUCTOR_IMPL(TYPE) \
     private: \
     stack_unwinding::unwinding_indicator stack_unwinding_indicator_##TYPE; \
-    void destructor_not_terminator_##TYPE()
+    void two_stage_destructor_release_##TYPE()
+
+
+// Should be in private section
+#define TWO_STAGE_DESTRUCTOR_DEFERRED(TYPE) \
+    private: \
+    void two_stage_destructor_deferred_##TYPE()
+
 
 // Put it into access specifier where you want to place your destructor.
 // After this macro, access specifier is set to private
-#define DESTRUCTOR_BUT_NOT_TERMINATOR_OUF_OF_CLASS_DECL(TYPE) \
+#define TWO_STAGE_DESTRUCTOR_OUF_OF_CLASS_DECL(TYPE) \
     ~TYPE(); \
     private: \
     stack_unwinding::unwinding_indicator stack_unwinding_indicator_##TYPE; \
-    void destructor_not_terminator_##TYPE();
+    void two_stage_destructor_release_##TYPE(); \
+    void two_stage_destructor_deferred_##TYPE();
 
 // Note: defines non-inline functions
-#define DESTRUCTOR_BUT_NOT_TERMINATOR_OUT_OF_CLASS_DEF(TYPE) \
-    TYPE:: DESTRUCTOR_BUT_NOT_TERMINATOR_IMPL(TYPE) \
-    void TYPE::destructor_not_terminator_##TYPE()
+#define TWO_STAGE_DESTRUCTOR_RELEASE_OUT_OF_CLASS_DEF(TYPE) \
+    TYPE:: TWO_STAGE_DESTRUCTOR_IMPL(TYPE) \
+    void TYPE::two_stage_destructor_release_##TYPE()
+
+#define TWO_STAGE_DESTRUCTOR_DEFERRED_OUT_OF_CLASS_DEF(TYPE) \
+    void TYPE::two_stage_destructor_deferred_##TYPE()
 
 
 // internal details:
-#define DESTRUCTOR_BUT_NOT_TERMINATOR_IMPL(TYPE) \
+#define TWO_STAGE_DESTRUCTOR_IMPL(TYPE) \
     ~TYPE() \
     { \
         if(stack_unwinding_indicator_##TYPE.unwinding()) \
-            { try { destructor_not_terminator_##TYPE(); } catch(...) {} } \
+            two_stage_destructor_release_##TYPE(); \
         else \
-            destructor_not_terminator_##TYPE(); \
+        { \
+            try \
+            { \
+                two_stage_destructor_deferred_##TYPE(); \
+            } \
+            catch(...) \
+            { \
+                two_stage_destructor_release_##TYPE(); \
+                throw; \
+            } \
+            two_stage_destructor_release_##TYPE(); \
+        } \
     } \
 
 #endif
