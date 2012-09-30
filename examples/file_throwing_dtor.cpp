@@ -4,7 +4,10 @@
 
 #include <stack_unwinding.hpp>
 
+#include "examples_common.hpp"
+
 using namespace std;
+
 
 class File
 {
@@ -75,7 +78,28 @@ int main(int,char *[])
     {
         cout << "Handling single failure" << endl;
     }
-
     return 0;
 }
 
+ExpectedStdoutTest test_cout
+(
+    "---------Case #1: new-style, throwing destructors\n"
+    "~File(): can throw\n"
+    "trying close\n"
+    "~File(): can't throw\n"
+    "trying close\n"
+    "Handling single failure\n"
+    "---------Case #2: old-style, manual close\n"
+    "trying close\n"
+    "~File(): can't throw\n"
+    "trying close\n"
+    "~File(): can't throw\n"
+    "Handling single failure\n"
+    "---------Case #3: handling each failure explicitly\n"
+    "trying close\n"
+    "Handling faulure in a\n"
+    "trying close\n"
+    "Handling faulure in b\n"
+    "~File(): can throw\n"
+    "~File(): can throw\n"
+);

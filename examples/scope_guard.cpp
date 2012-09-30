@@ -4,6 +4,8 @@
 
 #include <stack_unwinding.hpp>
 
+#include "examples_common.hpp"
+
 using namespace std;
 
 struct ThrowableDestructor
@@ -105,3 +107,33 @@ int main(int,char *[])
     return 0;
 }
 
+ExpectedStdoutTest test_cout
+(
+    "no exception:\n"
+    "scope_success\n"
+    "scope_exit\n"
+    "\n"
+    "basic throw:\n"
+    "scope_failure\n"
+    "scope_exit\n"
+    "\n"
+    "fail in previous destructor:\n"
+    "scope_failure\n"
+    "scope_exit\n"
+    "\n"
+    "fail in next destructor:\n"
+    "scope_success\n"
+    "scope_exit\n"
+    "\n"
+    "ExptSwallower<DLikeScopeGuard,ThrowableDestructor> during throw:\n"
+    "scope_failure\n"
+    "scope_exit\n"
+    "\n"
+    "ExptSwallower<ThrowableDestructor,DLikeScopeGuard> during throw:\n"
+    "scope_success\n"
+    "scope_exit\n"
+    "\n"
+    "ExptSwallower<DLikeScopeGuard,int> during throw:\n"
+    "scope_success\n"
+    "scope_exit\n"
+);

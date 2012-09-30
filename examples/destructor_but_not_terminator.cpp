@@ -4,6 +4,8 @@
 
 #include <destructor_but_not_terminator.hpp>
 
+#include "examples_common.hpp"
+
 using namespace std;
 
 struct DestructorInClass
@@ -45,7 +47,7 @@ int main(int,char *[])
        throw 3;
     }
     catch(int i) { cout << i; }
-
     return 0;
 }
 
+ExpectedStdoutTest test_cout("123");

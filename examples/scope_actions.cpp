@@ -5,6 +5,8 @@
 
 #include <scope_action.hpp>
 
+#include "examples_common.hpp"
+
 using namespace stack_unwinding;
 using namespace std;
 
@@ -42,3 +44,12 @@ int main(int,char *[])
     return 0;
 }
 
+ExpectedStdoutTest test_cout
+(
+    "Case #1: stack unwinding\n"
+    " failure\n"
+    " exit\n"
+    "Case #2: normal exit\n"
+    " success\n"
+    " exit\n"
+);

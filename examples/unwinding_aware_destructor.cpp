@@ -4,6 +4,8 @@
 
 #include <unwinding_aware_destructor.hpp>
 
+#include "examples_common.hpp"
+
 using namespace std;
 
 struct DestructorInClass
@@ -39,7 +41,14 @@ int main(int,char *[])
        throw 1;
     }
     catch(int) {}
-
     return 0;
 }
+
+ExpectedStdoutTest test_cout
+(
+    "DestructorInClass, unwinding: false\n"
+    "DestructorOutOfClass, unwinding: is not happening\n"
+    "DestructorInClass, unwinding: true\n"
+    "DestructorOutOfClass, unwinding: is happening\n"
+);
 

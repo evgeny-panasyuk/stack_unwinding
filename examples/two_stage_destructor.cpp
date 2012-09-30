@@ -4,6 +4,8 @@
 
 #include <two_stage_destructor.hpp>
 
+#include "examples_common.hpp"
+
 using namespace std;
 
 class RAII_Deffered
@@ -74,3 +76,28 @@ int main(int,char *[])
     return 0;
 }
 
+ExpectedStdoutTest test_cout
+(
+    "--------\n"
+    "acquiring resource\n"
+    "flush pending actions on resource\n"
+    "release resource\n"
+    "acquiring resource\n"
+    "flush pending actions on resource\n"
+    "release resource\n"
+    "1\n"
+    "acquiring resource\n"
+    "release resource\n"
+    "2\n"
+    "--------\n"
+    "acquiring resource\n"
+    "flush pending actions on resource\n"
+    "release resource\n"
+    "acquiring resource\n"
+    "flush pending actions on resource\n"
+    "release resource\n"
+    "1\n"
+    "acquiring resource\n"
+    "release resource\n"
+    "2\n"
+);

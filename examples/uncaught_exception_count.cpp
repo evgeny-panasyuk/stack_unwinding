@@ -4,6 +4,8 @@
 
 #include <stack_unwinding.hpp>
 
+#include "examples_common.hpp"
+
 using namespace std;
 
 struct ExpCountPrinter
@@ -45,3 +47,11 @@ int main(int,char *[])
     return 0;
 }
 
+ExpectedStdoutTest test_cout
+(
+    "uncaught_exception_count=4\n"
+    "uncaught_exception_count=3\n"
+    "uncaught_exception_count=2\n"
+    "uncaught_exception_count=1\n"
+    "uncaught_exception_count=0\n"
+);
