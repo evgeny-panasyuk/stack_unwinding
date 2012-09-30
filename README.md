@@ -1,7 +1,7 @@
 stack_unwinding
 ===============
 
-The stack_unwinding is a small header only C++ library which supplies primitive(class unwinding_indicator) to determining when object destructor is called due to stack-unwinding or due to normal scope leaving.
+The stack_unwinding is a small header-only C++ library which supplies primitive(class unwinding_indicator) to determining when object destructor is called due to stack-unwinding or due to normal scope leaving.
 
 Throwing Destructors which are not Terminators
 ==============================================
@@ -44,7 +44,7 @@ public:
     }
 };
 ```
-As the result, we may achieve exactly same effect as manually placing "f.close()" [1] at end of scope automaticly.
+With help of such technique, we may achieve exactly same effect as manually placing "f.close()" [1] at end of scope automaticly.
 ```C++
 {
    File a,b;
@@ -58,15 +58,10 @@ would became
 {
    File a,b;
    // ...
+   // b.~File() -  may throw
+   // a.~File() -  may throw
 }
 ```
-Note, there are cases when destructor is not called due to stack unwinding, but throwing exception from it may lead to unintended consequences. For instance, most of C++ code assumes non-throwing destructors. (TODO: add note about built-in arrays, STL, + references to ISO)
-
-Be aware of transitive nature of objects throwing destructors - if some class A aggregates or inherits class B which may throw in destructor, then class A also may throw on destruction, and as the consequence all classes that aggreagate or inherit A may throw on destruction, and so on.
-
-(Aggregation without turning aggregator's destruction into throwable is still possible, but requires explicit managing of construction and destruction of aggregate, for instance with help of placement new and explicit destructor call, or just new/delete. In that case you should swallow all exceptions from destructor.)
-
-As rule of dumb, use throwing destructors only in classes not intended to be aggregated or inherited, i.e. classes which lives only in code scope.
 
 D-style Scope Guards/Actions
 ============================
@@ -103,6 +98,17 @@ Implementation details
 Currently library is implemented on top of platform-specific implementation of uncaught_exception_count function.
 uncaught_exception_count is a function similar to std::uncaught_exception [1] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
 
+Caution
+=======
+
+There are cases when destructor is not called due to stack unwinding, but throwing exception from it may lead to unintended consequences. For instance, most of C++ code assumes non-throwing destructors. (TODO: add note about built-in arrays, STL, + references to ISO)
+
+Be aware of transitive nature of objects throwing destructors - if some class A aggregates or inherits class B which may throw in destructor, then class A also may throw on destruction, and as the consequence all classes that aggreagate or inherit A may throw on destruction, and so on.
+
+(Aggregation without turning aggregator's destruction into throwable is still possible, but requires explicit managing of construction and destruction of aggregate, for instance with help of placement new and explicit destructor call, or just new/delete. In that case you should swallow all exceptions from destructor.)
+
+As rule of dumb, use throwing destructors only in classes not intended to be aggregated or inherited, i.e. classes which lives only in code scope.
+
 References
 ==========
 
@@ -111,11 +117,6 @@ References
 3. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
 4. [D Programming Language. Scope Guard Statement](http://dlang.org/statement.html#ScopeGuardStatement)
 5. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
-
-Caution
-=======
-
-TODO: describe pitfalls
 
 Current library status: ALPHA
 =============================
