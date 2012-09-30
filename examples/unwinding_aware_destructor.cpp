@@ -6,18 +6,16 @@
 
 using namespace std;
 
-class DestructorInClass
+struct DestructorInClass
 {
-public:
     UNWINDING_AWARE_DESTRUCTOR(DestructorInClass,unwinding)
     {
         cout << "DestructorInClass, unwinding: " << ( unwinding ? "true" : "false" ) << endl;
     }
 };
 
-class DestructorOutOfClass
+struct DestructorOutOfClass
 {
-public:
     UNWINDING_AWARE_DESTRUCTOR_OUF_OF_CLASS_DECL(DestructorOutOfClass,unwinding);
 };
 
