@@ -92,11 +92,35 @@ However, this is not a big problem because these two D's constructs can be expre
 terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section).
 ```
 
-Implementation details
-======================
+Unwinding Aware Destructor
+==========================
 
-Currently library is implemented on top of platform-specific implementation of uncaught_exception_count function.
-uncaught_exception_count is a function similar to std::uncaught_exception [1] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
+Uwinding Aware Destructor is small abstration from explicit use of stack_unwinding::unwinding_indicator. It is destructor which takes boolean as parameter, which indicates if it called due to unwinding or not. Pseudocode is:
+```C++
+struct Foo
+{
+    ~Foo(bool due_to_unwinding)
+    {
+        if(due_to_unwinding)
+            // ...
+        else
+            // ...
+    }
+};
+```
+Real code exploits preprocessor macros:
+```C++
+struct Foo
+{
+    UNWINDING_AWARE_DESTRUCTOR(Foo,due_to_unwinding)
+    {
+        if(due_to_unwinding)
+            // ...
+        else
+            // ...
+    }
+};
+```
 
 Caution
 =======
@@ -108,6 +132,12 @@ Be aware of transitive nature of objects throwing destructors - if some class A 
 (Aggregation without turning aggregator's destruction into throwable is still possible, but requires explicit managing of construction and destruction of aggregate, for instance with help of placement new and explicit destructor call, or just new/delete. In that case you should swallow all exceptions from destructor.)
 
 As rule of dumb, use throwing destructors only in classes not intended to be aggregated or inherited, i.e. classes which lives only in code scope.
+
+Implementation details
+======================
+
+Currently library is implemented on top of platform-specific implementation of uncaught_exception_count function.
+uncaught_exception_count is a function similar to std::uncaught_exception [1] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
 
 References
 ==========
