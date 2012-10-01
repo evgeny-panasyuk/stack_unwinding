@@ -131,14 +131,20 @@ class RAII_Deffered
 {
     bool fail_on_flush;
 public:
+    // Normal contrustor
     RAII_Deffered(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
     {
         cout << "acquiring resource" << endl;
     }
+    // Release part of destructor.
+    // Herb Sutter: "letting go of a resource" must never fail
+    // (http://cpp-next.com/archive/2012/08/evil-or-just-misunderstood/)
     TWO_STAGE_DESTRUCTOR_RELEASE(RAII_Deffered)
     {
         cout << "release resource" << endl;
     }
+    // Deferred part of destructor. May fail(for instance fflush).
+    // Called when object is destroyed due to normal flow, not stack unwinding
     TWO_STAGE_DESTRUCTOR_DEFERRED(RAII_Deffered)
     {
         cout << "flush pending actions on resource" << endl;
@@ -146,6 +152,23 @@ public:
     }
 };
 ```
+Two stage destructor has following semantics:
+```C++
+~Foo(bool due_to_unwinding)
+{
+    try
+    {
+        if(!due_to_unwinding) deferred_part_of_destructor();
+    }
+    catch(...)
+    {
+        release_part_of_destructor();
+        throw;
+    }
+    release_part_of_destructor();
+}
+```
+Note: exceptions are not swallowed, information is not lost.
 
 Caution
 =======
