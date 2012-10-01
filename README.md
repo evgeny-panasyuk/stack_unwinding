@@ -6,7 +6,7 @@ The stack_unwinding is a small header-only C++ library which supplies primitive(
 Throwing Destructors which are not Terminators
 ==============================================
 
-One of uses cases of this library is to check when throwing exception from destructor may lead to call std::terminate, because destructor was called due to stack unwinding. That will allow use to write destructors, which are not terminators:
+One of uses cases of this library is to check when throwing exception from destructor may lead to call std::terminate, because destructor was called due to stack unwinding. That will allow us to write destructors, which are not terminators:
 ```C++
 class NotTerminator
 {
@@ -95,7 +95,7 @@ terms of scope(exit) and a bool commit variable (similarly to some examples pres
 Unwinding Aware Destructor
 ==========================
 
-Uwinding Aware Destructor is small abstration from explicit use of stack_unwinding::unwinding_indicator. It is destructor which takes boolean as parameter, which indicates if it called due to unwinding or not. Pseudocode is:
+Uwinding Aware Destructor is abstration from explicit use of stack_unwinding::unwinding_indicator. It is destructor which takes boolean as parameter, which indicates if it called due to unwinding or not. Pseudocode is:
 ```C++
 struct Foo
 {
@@ -108,7 +108,7 @@ struct Foo
     }
 };
 ```
-Real code exploits preprocessor macros:
+Real code using preprocessor macro:
 ```C++
 struct Foo
 {
@@ -118,6 +118,31 @@ struct Foo
             // ...
         else
             // ...
+    }
+};
+```
+
+Two Stage Destructor
+====================
+
+[TODO]
+```C++
+class RAII_Deffered
+{
+    bool fail_on_flush;
+public:
+    RAII_Deffered(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
+    {
+        cout << "acquiring resource" << endl;
+    }
+    TWO_STAGE_DESTRUCTOR_RELEASE(RAII_Deffered)
+    {
+        cout << "release resource" << endl;
+    }
+    TWO_STAGE_DESTRUCTOR_DEFERRED(RAII_Deffered)
+    {
+        cout << "flush pending actions on resource" << endl;
+        if(fail_on_flush) throw 1;
     }
 };
 ```
