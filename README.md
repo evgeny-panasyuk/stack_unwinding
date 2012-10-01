@@ -125,7 +125,7 @@ struct Foo
 Two Stage Destructor
 ====================
 
-[TODO]
+[Description - TODO]
 ```C++
 class RAII_Deffered
 {
