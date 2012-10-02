@@ -9,6 +9,76 @@ It contains several tools implemented on top of unwinding_indicator:
 * Parameterized Unwinding Aware Destructor
 * Two Stage Destructor: Deferred Action(possibly throwing) and Release Resources(non-fail, non-throwing) stages
 
+D-style Scope Guards/Actions
+============================
+
+With help of unwinding_indicator it is possible develop "advanced" Scope Guard [1], which respects exceptions from destructors, and does not require calling of release/commit by hands.
+D langauge has scope(success) and scope(failure) [2,3] which are simmilar in something to that "advanced" Scope Guard semantic.
+
+This library has example implementations of "scope(success)" and "scope(failure)":
+```C++
+{
+    scope_action exit = make<scope_exit>( Print("exit") );
+    scope_action failure = make<scope_failure>( Print("failure") );
+    scope_action success = make<scope_success>( Print("success") );
+    throw 1;
+}
+```
+
+Boost has "Scope Exit" library [4] which in examples shows using of commiting by hands.
+Some quote from Boost.ScopeExit manual [5]:
+```
+Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
+
+A curious reader may notice that the library does not implement scope(success) and
+scope(failure) of the D language. Unfortunately, these are not possible in C++ because
+failure or success conditions cannot be determined by calling std::uncaught_exception
+(see Guru of the Week #47 for details about std::uncaught_exception and if it has any good use at all).
+However, this is not a big problem because these two D's constructs can be expressed in
+terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section).
+```
+This library contains example implementations of BOOST_SCOPE_FAILURE and BOOST_SCOPE_SUCCESS (based on Boost.ScopeExit + unwinding_indicator):
+```C++
+{
+    BOOST_SCOPE_EXIT(void) { cout << "exit" << endl; } BOOST_SCOPE_EXIT_END
+    BOOST_SCOPE_FAILURE(void) { cout << "failure" << endl; } BOOST_SCOPE_FAILURE_END
+    BOOST_SCOPE_SUCCESS(void) { cout << "success" << endl; } BOOST_SCOPE_SUCCESS_END
+    throw 1;
+}
+```
+Boost.ScopeExit has following example in manual [4]:
+```C++
+void world::add_person(person const& a_person) {
+    bool commit = false;
+
+    persons_.push_back(a_person);           // (1) direct action
+    // Following block is executed when the enclosing scope exits.
+    BOOST_SCOPE_EXIT(&commit, &persons_) {
+        if(!commit) persons_.pop_back();    // (2) rollback action
+    } BOOST_SCOPE_EXIT_END
+
+    // ...                                  // (3) other operations
+
+    commit = true;                          // (4) disable rollback actions
+}
+```
+Using BOOST_SCOPE_FAILURE it would became:
+```C++
+void world::add_person(person const& a_person) {
+    persons_.push_back(a_person);           // (1) direct action
+    // Following block is executed when the enclosing scope exits.
+    BOOST_SCOPE_FAILURE(&commit, &persons_) {
+        persons_.pop_back();                // (2) rollback action
+    } BOOST_SCOPE_FAILURE
+
+    // ...                                  // (3) other operations
+}
+```
+Using of ScopeGuard idiom (committing/releasing by hands) becoming even more complicated in face of multiple scope exits: return, break, continue, etc - multiple committing releaseing should be used.
+While scope(failure)/scope(success) should be placed only once.
+
+Moreover, it is impossible to place manual committing/releasing somewhere between or after destructor calls, without use of artifical C++ code blocks. While it can be done naturally with scope(failure)/scope(success).
+
 Throwing Destructors which are not Terminators
 ==============================================
 
@@ -50,7 +120,7 @@ public:
     }
 };
 ```
-With help of such technique, we may achieve exactly same effect as manually placing "f.close()" [1] at end of scope automaticly.
+With help of such technique, we may achieve exactly same effect as manually placing "f.close()" [6] at end of scope automaticly.
 ```C++
 {
    File a,b;
@@ -68,76 +138,6 @@ would became
    // a.~File() -  may throw
 }
 ```
-
-D-style Scope Guards/Actions
-============================
-
-More generally this library helps to develop "advanced" Scope Guard [2], which respects exceptions from destructors, and does not require calling of release/commit by hands.
-D langauge has scope(success) and scope(failure) [3,4] which are simmilar in something to that "advanced" Scope Guard semantic.
-
-This library has example implementations of "scope(success)" and "scope(failure)":
-```C++
-{
-    scope_action exit = make<scope_exit>( Print("exit") );
-    scope_action failure = make<scope_failure>( Print("failure") );
-    scope_action success = make<scope_success>( Print("success") );
-    throw 1;
-}
-```
-
-Boost has "Scope Exit" library [5] which in examples shows using of commiting by hands.
-Some quote from Boost.ScopeExit manual [6]:
-```
-Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
-
-A curious reader may notice that the library does not implement scope(success) and
-scope(failure) of the D language. Unfortunately, these are not possible in C++ because
-failure or success conditions cannot be determined by calling std::uncaught_exception
-(see Guru of the Week #47 for details about std::uncaught_exception and if it has any good use at all).
-However, this is not a big problem because these two D's constructs can be expressed in
-terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section).
-```
-This library contains example implementations of BOOST_SCOPE_FAILURE and BOOST_SCOPE_SUCCESS (based on Boost.ScopeExit + unwinding_indicator):
-```C++
-{
-    BOOST_SCOPE_EXIT(void) { cout << "exit" << endl; } BOOST_SCOPE_EXIT_END
-    BOOST_SCOPE_FAILURE(void) { cout << "failure" << endl; } BOOST_SCOPE_FAILURE_END
-    BOOST_SCOPE_SUCCESS(void) { cout << "success" << endl; } BOOST_SCOPE_SUCCESS_END
-    throw 1;
-}
-```
-Boost.ScopeExit has following example in manual [5]:
-```C++
-void world::add_person(person const& a_person) {
-    bool commit = false;
-
-    persons_.push_back(a_person);           // (1) direct action
-    // Following block is executed when the enclosing scope exits.
-    BOOST_SCOPE_EXIT(&commit, &persons_) {
-        if(!commit) persons_.pop_back();    // (2) rollback action
-    } BOOST_SCOPE_EXIT_END
-
-    // ...                                  // (3) other operations
-
-    commit = true;                          // (4) disable rollback actions
-}
-```
-Using BOOST_SCOPE_FAILURE it would became:
-```C++
-void world::add_person(person const& a_person) {
-    persons_.push_back(a_person);           // (1) direct action
-    // Following block is executed when the enclosing scope exits.
-    BOOST_SCOPE_FAILURE(&commit, &persons_) {
-        persons_.pop_back();                // (2) rollback action
-    } BOOST_SCOPE_FAILURE
-
-    // ...                                  // (3) other operations
-}
-```
-Using of ScopeGuard idiom (committing/releasing by hands) becoming even more complicated in face of multiple scope exits: return, break, continue, etc - multiple committing releaseing should be used.
-While scope(failure)/scope(success) should be placed only once.
-
-Moreover, it is impossible to place manual committing/releasing somewhere between or after destructor calls, without use of artifical C++ code blocks. While it can be done naturally with scope(failure)/scope(success).
 
 Unwinding Aware Destructor
 ==========================
@@ -276,17 +276,17 @@ Implementation details
 ======================
 
 Currently library is implemented on top of platform-specific implementation of uncaught_exception_count function.
-uncaught_exception_count is a function similar to std::uncaught_exception [1] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
+uncaught_exception_count is a function similar to std::uncaught_exception [6] from standard library, but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
 
 References
 ==========
 
-1. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
-2. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code - Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
-3. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
-4. [D Programming Language. Scope Guard Statement](http://dlang.org/statement.html#ScopeGuardStatement)
-5. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
-6. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit. Note on scope(failure) and scope(success)](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/scope_exit/alternatives.html#scope_exit.alternatives.the_d_programming_language)
+1. [Andrei Alexandrescu, Petru Marginean. Generic: Change the Way You Write Exception-Safe Code - Forever](http://www.drdobbs.com/cpp/generic-change-the-way-you-write-excepti/184403758)
+2. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
+3. [D Programming Language. Scope Guard Statement](http://dlang.org/statement.html#ScopeGuardStatement)
+4. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
+5. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit. Note on scope(failure) and scope(success)](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/scope_exit/alternatives.html#scope_exit.alternatives.the_d_programming_language)
+6. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
 
 Current library status: ALPHA
 =============================
