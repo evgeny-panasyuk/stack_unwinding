@@ -13,6 +13,8 @@
 
 #ifndef DOXYGEN
 
+#include <stack_unwinding.hpp>
+
 #include <boost/local_function/detail/preprocessor/line_counter.hpp>
 #include <boost/local_function/detail/preprocessor/void_list.hpp>
 #include <boost/local_function/detail/preprocessor/keyword/thisunderscore.hpp>
@@ -605,21 +607,23 @@ namespace boost { namespace scope_success { namespace aux {
 template<typename This = void>
 struct guard { // With object `this_` (for backward compatibility).
     explicit guard(This _this) : this_(_this) {}
-    ~guard() { if(f_) f_(this_); }
+    ~guard() { if(f_ && !indicator.unwinding()) f_(this_); }
     template<typename Lambda>
     void operator=(Lambda f) { f_ = f; }
 private:
     This this_;
     boost::function<void (This)> f_;
+    stack_unwinding::unwinding_indicator indicator;
 };
 
 template<>
 struct guard<void> { // Without object `this_` (could capture `this` directly).
-    ~guard() { if(f_) f_(); }
+    ~guard() { if(f_ && !indicator.unwinding()) f_(); }
     template<typename Lambda>
     void operator=(Lambda f) { f_ = f; }
 private:
     boost::function<void (void)> f_;
+    stack_unwinding::unwinding_indicator indicator;
 };
 
 } } } // namespace
@@ -731,8 +735,10 @@ private:
             : boost_se_params_( \
                     (BOOST_SCOPE_SUCCESS_DETAIL_PARAMS_T(id)*)boost_se_params) \
         {} \
+        private : stack_unwinding::unwinding_indicator indicator; \
+        public : \
         ~BOOST_SCOPE_SUCCESS_AUX_GUARD_T(id)() { \
-            boost_se_body( \
+            if(!indicator.unwinding()) boost_se_body( \
                 BOOST_PP_LIST_FOR_EACH_I(BOOST_SCOPE_SUCCESS_AUX_ARG, id, \
                         BOOST_SCOPE_SUCCESS_AUX_TRAITS_CAPTURES(traits)) \
                 BOOST_PP_COMMA_IF(BOOST_PP_BITAND(BOOST_PP_LIST_IS_CONS( \
