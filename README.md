@@ -213,6 +213,7 @@ would became
    // a.~File() -  may throw
 }
 ```
+Note: swallowing some of exceptions - means losing info. It is much better than swallowing all exceptions, but still not very good solution. Look at Two-Stage Destruction below for non-swallowing approach.
 
 Unwinding Aware Destructor
 ==========================
