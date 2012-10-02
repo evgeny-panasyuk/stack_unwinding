@@ -122,7 +122,37 @@ void some_func()
     }
 }
 ```
-Moreover, it is impossible to place manual committing/releasing somewhere between or after destructor calls, without use of artifical C++ code blocks. While it can be done naturally with scope(failure)/scope(success).
+Moreover, it is impossible to place manual committing/releasing somewhere between or after destructor calls, without use of artifical C++ code blocks:
+```C++
+void some_func()
+{
+    bool commit = false;
+    BOOST_SCOPE_EXIT(&commit) {
+        if(!commit) rollback();
+    } BOOST_SCOPE_EXIT_END
+
+    // Artifical code block
+    {
+        Something a,b,c;
+        /* ... */
+    }
+
+    commit = true;
+}
+```
+While it can be done naturally with scope(failure)/scope(success):
+```C++
+void some_func()
+{
+    BOOST_SCOPE_FAILURE() {
+        rollback();
+    } BOOST_SCOPE_FAILURE
+
+    Something a,b,c;
+    /* ... */
+}
+```
+
 
 Throwing Destructors which are not Terminators
 ==============================================
