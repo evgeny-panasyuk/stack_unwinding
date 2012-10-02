@@ -91,6 +91,15 @@ failure or success conditions cannot be determined by calling std::uncaught_exce
 However, this is not a big problem because these two D's constructs can be expressed in
 terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section).
 ```
+This library contains example implementations of BOOST_SCOPE_FAILURE and BOOST_SCOPE_SUCCESS (based on Boost.ScopeExit + unwinding_indicator):
+```C++
+{
+    BOOST_SCOPE_EXIT(void) { cout << "exit" << endl; } BOOST_SCOPE_EXIT_END
+    BOOST_SCOPE_FAILURE(void) { cout << "failure" << endl; } BOOST_SCOPE_FAILURE_END
+    BOOST_SCOPE_SUCCESS(void) { cout << "success" << endl; } BOOST_SCOPE_SUCCESS_END
+    throw 1;
+}
+```
 
 Unwinding Aware Destructor
 ==========================
