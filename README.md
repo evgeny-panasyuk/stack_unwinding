@@ -131,30 +131,37 @@ struct Foo
 };
 ```
 
-Two Stage Destructor
-====================
+Two Stage Destructor. Deferred actions
+======================================
 
 [Description - TODO]
+
+Deferred Action of object - is action which is executed before Resource Releasing of object if object's destruction happens due to normal scope exit, not unwinding.
+
+Resource Releasing - is last action executed on object's body, it is executed regardless of object's destruction reasons(unwinding or not). Semantically Resource Releasing must not fail.
+
+Main difference between Deferred Action and Resource Releasing is in fact, that Deferred Action may fail and throw exception without risk to trigger std::terminate.
+
 ```C++
-class RAII_Deffered
+class RAII_Deferred
 {
     bool fail_on_flush;
 public:
     // Normal contrustor
-    RAII_Deffered(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
+    RAII_Deferred(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
     {
         cout << "acquiring resource" << endl;
     }
     // Release part of destructor.
     // Herb Sutter: "letting go of a resource" must never fail
     // (http://cpp-next.com/archive/2012/08/evil-or-just-misunderstood/)
-    TWO_STAGE_DESTRUCTOR_RELEASE(RAII_Deffered)
+    TWO_STAGE_DESTRUCTOR_RELEASE(RAII_Deferred)
     {
         cout << "release resource" << endl;
     }
     // Deferred part of destructor. May fail(for instance fflush).
     // Called when object is destroyed due to normal flow, not stack unwinding
-    TWO_STAGE_DESTRUCTOR_DEFERRED(RAII_Deffered)
+    TWO_STAGE_DESTRUCTOR_DEFERRED(RAII_Deferred)
     {
         cout << "flush pending actions on resource" << endl;
         if(fail_on_flush) throw 1;
@@ -177,7 +184,44 @@ Two stage destructor has following semantics:
     release_part_of_destructor();
 }
 ```
-Note: exceptions are not swallowed, information is not lost.
+Two-stage destruction clearly partition destructors into two semantically different operations: Dereffed Action and Resource Releasing.
+Two-stage destruction has following properties:
+* Exceptions are not swallowed, information is not lost.
+* Deferred Actions are simillar to ordinary actions below throw statement – because ordinary actions are not executed during stack unwinding also.
+* If one of Deferred Actions is failed - other Deferred Actions until next "catch" statement are not executed. In most cases, fail in one of deferred actions means that function/scope/object failed to achieve it's post-conditions, and there is no sense in executing other deferred actions.
+* Resource Releasing happens regardless of fail in deferred action.
+
+Let us consider following function:
+```C++
+void fsome(/* ... */)
+{
+    OutFile a("a"),b("b");
+    a.write("Hello");
+    b.write("World");
+    // ... - may fail
+    b.flush(); // may fail
+    a.flush(); // may fail
+}
+```
+In most cases, if b.flush() failed, there is no sense to execute a.flush(), so - b.flush() may safely throw exception, which would be not handled within it's scope.
+
+Also, in most cases, if something failed at "..." and throwed exception - there is no sense to flush writes - only resources should be released.
+Exactly same semantics can be achieved with notion of Two-Stage destruction:
+```C++
+void fsome(/* ... */)
+{
+    OutFile a("a"),b("b");
+    a.write("Hello");
+    b.write("World");
+    // ... - may fail
+    // b.~OutFile():
+    //     Deferred Action: flush - called if destruction is not due to unwinding, may throw
+    //     Resource Releasing: fclose - called in anycase
+    // a.~OutFile()
+    //     Deferred Action: flush - called if destruction is not due to unwinding, may throw
+    //     Resource Releasing: fclose - called in anycase
+}
+```
 
 Caution
 =======

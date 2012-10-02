@@ -8,41 +8,41 @@
 
 using namespace std;
 
-class RAII_Deffered
+class RAII_Deferred
 {
     bool fail_on_flush;
 public:
-    RAII_Deffered(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
+    RAII_Deferred(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
     {
         cout << "acquiring resource" << endl;
     }
-    TWO_STAGE_DESTRUCTOR_RELEASE(RAII_Deffered)
+    TWO_STAGE_DESTRUCTOR_RELEASE(RAII_Deferred)
     {
         cout << "release resource" << endl;
     }
-    TWO_STAGE_DESTRUCTOR_DEFERRED(RAII_Deffered)
+    TWO_STAGE_DESTRUCTOR_DEFERRED(RAII_Deferred)
     {
         cout << "flush pending actions on resource" << endl;
         if(fail_on_flush) throw 1;
     }
 };
 
-class RAII_Deffered_out_of_class
+class RAII_Deferred_out_of_class
 {
     bool fail_on_flush;
 public:
-    RAII_Deffered_out_of_class(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
+    RAII_Deferred_out_of_class(bool fail_on_flush_) : fail_on_flush(fail_on_flush_)
     {
         cout << "acquiring resource" << endl;
     }
-    TWO_STAGE_DESTRUCTOR_OUF_OF_CLASS_DECL(RAII_Deffered_out_of_class)
+    TWO_STAGE_DESTRUCTOR_OUF_OF_CLASS_DECL(RAII_Deferred_out_of_class)
 };
 
-TWO_STAGE_DESTRUCTOR_RELEASE_OUT_OF_CLASS_DEF(RAII_Deffered_out_of_class)
+TWO_STAGE_DESTRUCTOR_RELEASE_OUT_OF_CLASS_DEF(RAII_Deferred_out_of_class)
 {
     cout << "release resource" << endl;
 }
-TWO_STAGE_DESTRUCTOR_DEFERRED_OUT_OF_CLASS_DEF(RAII_Deffered_out_of_class)
+TWO_STAGE_DESTRUCTOR_DEFERRED_OUT_OF_CLASS_DEF(RAII_Deferred_out_of_class)
 {
     cout << "flush pending actions on resource" << endl;
     if(fail_on_flush) throw 1;
@@ -71,8 +71,8 @@ void test()
 }
 int main(int,char *[])
 {
-    test<RAII_Deffered>();
-    test<RAII_Deffered_out_of_class>();
+    test<RAII_Deferred>();
+    test<RAII_Deferred_out_of_class>();
     return 0;
 }
 
