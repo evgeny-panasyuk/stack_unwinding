@@ -69,7 +69,7 @@ void world::add_person(person const& a_person) {
     // Following block is executed when the enclosing scope exits.
     BOOST_SCOPE_FAILURE(&persons_) {
         persons_.pop_back();                // (2) rollback action
-    } BOOST_SCOPE_FAILURE
+    } BOOST_SCOPE_FAILURE_END
 
     // ...                                  // (3) other operations
 }
@@ -113,7 +113,7 @@ void some_func()
     {
         BOOST_SCOPE_FAILURE() {
             rollback();
-        } BOOST_SCOPE_FAILURE
+        } BOOST_SCOPE_FAILURE_END
         /* ... */
         if(cond1) continue;
         if(cond2) break;
@@ -146,7 +146,7 @@ void some_func()
 {
     BOOST_SCOPE_FAILURE() {
         rollback();
-    } BOOST_SCOPE_FAILURE
+    } BOOST_SCOPE_FAILURE_END
 
     Something a,b,c;
     /* ... */
