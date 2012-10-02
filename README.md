@@ -86,7 +86,7 @@ This library has example implementations of "scope(success)" and "scope(failure)
 ```
 
 Boost has "Scope Exit" library [5] which in examples shows using of commiting by hands.
-Some quote from Boost.ScopeExit manual:
+Some quote from Boost.ScopeExit manual [6]:
 ```
 Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
 
@@ -106,6 +106,38 @@ This library contains example implementations of BOOST_SCOPE_FAILURE and BOOST_S
     throw 1;
 }
 ```
+Boost.ScopeExit has following example in manual [5]:
+```C++
+void world::add_person(person const& a_person) {
+    bool commit = false;
+
+    persons_.push_back(a_person);           // (1) direct action
+    // Following block is executed when the enclosing scope exits.
+    BOOST_SCOPE_EXIT(&commit, &persons_) {
+        if(!commit) persons_.pop_back();    // (2) rollback action
+    } BOOST_SCOPE_EXIT_END
+
+    // ...                                  // (3) other operations
+
+    commit = true;                          // (4) disable rollback actions
+}
+```
+Using BOOST_SCOPE_FAILURE it would became:
+```C++
+void world::add_person(person const& a_person) {
+    persons_.push_back(a_person);           // (1) direct action
+    // Following block is executed when the enclosing scope exits.
+    BOOST_SCOPE_FAILURE(&commit, &persons_) {
+        persons_.pop_back();                // (2) rollback action
+    } BOOST_SCOPE_FAILURE
+
+    // ...                                  // (3) other operations
+}
+```
+Using of ScopeGuard idiom (committing/releasing by hands) becoming even more complicated in face of multiple scope exits: return, break, continue, etc - multiple committing releaseing should be used.
+While scope(failure)/scope(success) should be placed only once.
+
+Moreover, it is impossible to place manual committing/releasing somewhere between or after destructor calls, without use of artifical C++ code blocks. While it can be done naturally with scope(failure)/scope(success).
 
 Unwinding Aware Destructor
 ==========================
@@ -254,6 +286,7 @@ References
 3. [Andrei Alexandrescu. Three Unlikely Successful Features of D](http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Three-Unlikely-Successful-Features-of-D)
 4. [D Programming Language. Scope Guard Statement](http://dlang.org/statement.html#ScopeGuardStatement)
 5. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/index.html)
+6. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit. Note on scope(failure) and scope(success)](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/scope_exit/alternatives.html#scope_exit.alternatives.the_d_programming_language)
 
 Current library status: ALPHA
 =============================
