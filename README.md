@@ -3,6 +3,12 @@ stack_unwinding
 
 The stack_unwinding is a small header-only C++ library which supplies primitive(class unwinding_indicator) to determining when object destructor is called due to stack-unwinding or due to normal scope leaving.
 
+It contains several tools implemented on top of unwinding_indicator:
+* Scope Success and Scope Failure in C++, like in D language, without manual ScopeGuard's .commit/.release
+* Throwing Destructor which is not Terminator
+* Parameterized Unwinding Aware Destructor
+* Two Stage Destructor: Deferred Action(possibly throwing) and Release Resources(non-fail, non-throwing) stages
+
 Throwing Destructors which are not Terminators
 ==============================================
 
