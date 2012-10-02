@@ -25,3 +25,8 @@ example(unwinding_aware_destructor)
 example(destructor_but_not_terminator)
 example(two_stage_destructor)
 
+find_package( Boost 1.51.0 )
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+    example(boost_scopes)
+endif()
