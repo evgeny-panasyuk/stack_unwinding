@@ -67,16 +67,61 @@ Using BOOST_SCOPE_FAILURE it would became:
 void world::add_person(person const& a_person) {
     persons_.push_back(a_person);           // (1) direct action
     // Following block is executed when the enclosing scope exits.
-    BOOST_SCOPE_FAILURE(&commit, &persons_) {
+    BOOST_SCOPE_FAILURE(&persons_) {
         persons_.pop_back();                // (2) rollback action
     } BOOST_SCOPE_FAILURE
 
     // ...                                  // (3) other operations
 }
 ```
-Using of ScopeGuard idiom (committing/releasing by hands) becoming even more complicated in face of multiple scope exits: return, break, continue, etc - multiple committing releaseing should be used.
-While scope(failure)/scope(success) should be placed only once.
-
+Using of ScopeGuard idiom (committing/releasing by hands) becoming even more complicated in face of multiple scope exits: return, break, continue, etc - multiple committing/releasing should be used:
+```C++
+void some_func()
+{
+    while(something)
+    {
+        bool commit = false;
+        BOOST_SCOPE_EXIT(&commit) {
+            if(!commit) rollback();
+        } BOOST_SCOPE_EXIT_END
+        /* ... */
+        if(cond1)
+        {
+            commit = true;
+            continue;
+        }
+        if(cond2)
+        {
+            commit = true;
+            break;
+        }
+        if(cond3)
+        {
+            commit = true;
+            return;
+        }
+        /* ... */
+        commit = true;
+    }
+}
+```
+While scope(failure)/scope(success) should be placed only once:
+```C++
+void some_func()
+{
+    while(something)
+    {
+        BOOST_SCOPE_FAILURE() {
+            rollback();
+        } BOOST_SCOPE_FAILURE
+        /* ... */
+        if(cond1) continue;
+        if(cond2) break;
+        if(cond3) return;
+        /* ... */
+    }
+}
+```
 Moreover, it is impossible to place manual committing/releasing somewhere between or after destructor calls, without use of artifical C++ code blocks. While it can be done naturally with scope(failure)/scope(success).
 
 Throwing Destructors which are not Terminators
