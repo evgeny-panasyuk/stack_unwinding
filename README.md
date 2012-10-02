@@ -244,8 +244,8 @@ struct Foo
 };
 ```
 
-Two Stage Destructor. Deferred actions
-======================================
+Two Stage Destructor
+====================
 
 [Description - TODO]
 
