@@ -24,6 +24,7 @@ example(example_from_dlang_dot_org)
 example(unwinding_aware_destructor)
 example(destructor_but_not_terminator)
 example(two_stage_destructor)
+example(uncaught_exception_count_floating_object)
 
 find_package( Boost 1.51.0 )
 if(Boost_FOUND)
