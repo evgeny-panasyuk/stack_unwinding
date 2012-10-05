@@ -12,7 +12,7 @@ It contains several tools implemented on top of unwinding_indicator:
 D-style Scope Guards/Actions
 ============================
 
-With help of unwinding_indicator it is possible develop "advanced" Scope Guard [1], which respects exceptions from destructors, and does not require calling of release/commit by hands.
+With help of unwinding_indicator it is possible to develop "advanced" Scope Guard [1], which respects exceptions from destructors, and does not require calling of release/commit by hands.
 D langauge has scope(success) and scope(failure) [2,3] which are simmilar in something to that "advanced" Scope Guard semantic.
 
 This library has example implementations of "scope(success)" and "scope(failure)":
@@ -37,12 +37,12 @@ failure or success conditions cannot be determined by calling std::uncaught_exce
 However, this is not a big problem because these two D's constructs can be expressed in
 terms of scope(exit) and a bool commit variable (similarly to some examples presented in the Tutorial section).
 ```
-This library contains example implementations of BOOST_SCOPE_FAILURE and BOOST_SCOPE_SUCCESS (based on Boost.ScopeExit + unwinding_indicator):
+This library contains example implementations of SCOPE_FAILURE and SCOPE_SUCCESS (based on Boost.ScopeExit + unwinding_indicator):
 ```C++
 {
     BOOST_SCOPE_EXIT(void) { cout << "exit" << endl; } BOOST_SCOPE_EXIT_END
-    BOOST_SCOPE_FAILURE(void) { cout << "failure" << endl; } BOOST_SCOPE_FAILURE_END
-    BOOST_SCOPE_SUCCESS(void) { cout << "success" << endl; } BOOST_SCOPE_SUCCESS_END
+    SCOPE_FAILURE(void) { cout << "failure" << endl; } SCOPE_FAILURE_END
+    SCOPE_SUCCESS(void) { cout << "success" << endl; } SCOPE_SUCCESS_END
     throw 1;
 }
 ```
@@ -62,14 +62,14 @@ void world::add_person(person const& a_person) {
     commit = true;                          // (4) disable rollback actions
 }
 ```
-Using BOOST_SCOPE_FAILURE it would became:
+Using SCOPE_FAILURE it would became:
 ```C++
 void world::add_person(person const& a_person) {
     persons_.push_back(a_person);           // (1) direct action
     // Following block is executed when the enclosing scope exits.
-    BOOST_SCOPE_FAILURE(&persons_) {
+    SCOPE_FAILURE(&persons_) {
         persons_.pop_back();                // (2) rollback action
-    } BOOST_SCOPE_FAILURE_END
+    } SCOPE_FAILURE_END
 
     // ...                                  // (3) other operations
 }
@@ -111,9 +111,9 @@ void some_func()
 {
     while(something)
     {
-        BOOST_SCOPE_FAILURE() {
+        SCOPE_FAILURE() {
             rollback();
-        } BOOST_SCOPE_FAILURE_END
+        } SCOPE_FAILURE_END
         /* ... */
         if(cond1) continue;
         if(cond2) break;
@@ -144,9 +144,9 @@ While it can be done naturally with scope(failure)/scope(success):
 ```C++
 void some_func()
 {
-    BOOST_SCOPE_FAILURE() {
+    SCOPE_FAILURE() {
         rollback();
-    } BOOST_SCOPE_FAILURE_END
+    } SCOPE_FAILURE_END
 
     Something a,b,c;
     /* ... */

@@ -20,15 +20,15 @@ int main(int,char *[])
     {
         cout << "Case #1: stack unwinding" << endl;
         BOOST_SCOPE_EXIT(void) { cout << "exit" << endl; } BOOST_SCOPE_EXIT_END
-        BOOST_SCOPE_FAILURE(void) { cout << "failure" << endl; } BOOST_SCOPE_FAILURE_END
-        BOOST_SCOPE_SUCCESS(void) { cout << "success" << endl; } BOOST_SCOPE_SUCCESS_END
+        SCOPE_FAILURE(void) { cout << "failure" << endl; } SCOPE_FAILURE_END
+        SCOPE_SUCCESS(void) { cout << "success" << endl; } SCOPE_SUCCESS_END
         throw 1;
     } catch(int){}
     {
         cout << "Case #2: normal exit" << endl;
         BOOST_SCOPE_EXIT(void) { cout << "exit" << endl; } BOOST_SCOPE_EXIT_END
-        BOOST_SCOPE_FAILURE(void) { cout << "failure" << endl; } BOOST_SCOPE_FAILURE_END
-        BOOST_SCOPE_SUCCESS(void) { cout << "success" << endl; } BOOST_SCOPE_SUCCESS_END
+        SCOPE_FAILURE(void) { cout << "failure" << endl; } SCOPE_FAILURE_END
+        SCOPE_SUCCESS(void) { cout << "success" << endl; } SCOPE_SUCCESS_END
     }
     return 0;
 }
