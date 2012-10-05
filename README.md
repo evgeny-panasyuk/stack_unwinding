@@ -367,14 +367,15 @@ References
 Current library status: ALPHA
 =============================
 
-* MSVC 2005: tested on x32 and x64, default settings
-* MSVC 2008: tested on x32 and x64, default settings
-* MSVC 2010: tested on x32 and x64, default settings
-* MSVC 2012: tested on x32 and x64, default settings
-* GCC 3.4.6: tested on x32 and x64, default settings
-* GCC 4.1.2: tested on x32 and x64, default settings
-* GCC 4.4.6: tested on x32 and x64, default settings
-* Clang 3.2:  tested on x32 and x64, default settings
+* MSVC 2005, Windows 7: tested on x32 and x64, default settings
+* MSVC 2008, Windows 7: tested on x32 and x64, default settings
+* MSVC 2010, Windows 7: tested on x32 and x64, default settings
+* MSVC 2012, Windows 7: tested on x32 and x64, default settings
+* GCC 3.4.6, CentOS 5: tested on x32 and x64, default settings
+* GCC 4.1.2, CentOS 5: tested on x32 and x64, default settings
+* GCC 4.4.6, CentOS 5: tested on x32 and x64, default settings
+* GCC 4.4.7, MinGW: tested on x64, default settings
+* Clang 3.2, CentOS 5:  tested on x32 and x64, default settings
 
 About
 ======
