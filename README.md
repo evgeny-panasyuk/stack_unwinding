@@ -108,7 +108,7 @@ Moreover, it is possible to extend this example: defer "flush" action, which may
 ```C++
 {
     SCOPE_FAILURE(void) {
-        log("could not get user info");
+        log("could not update user info");
     } SCOPE_FAILURE_END
 
     File passwd("/etc/passwd");
