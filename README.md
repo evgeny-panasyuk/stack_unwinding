@@ -111,7 +111,7 @@ void some_func()
 {
     while(something)
     {
-        SCOPE_FAILURE() {
+        SCOPE_FAILURE(void) {
             rollback();
         } SCOPE_FAILURE_END
         /* ... */
@@ -144,7 +144,7 @@ While it can be done naturally with scope(failure)/scope(success):
 ```C++
 void some_func()
 {
-    SCOPE_FAILURE() {
+    SCOPE_FAILURE(void) {
         rollback();
     } SCOPE_FAILURE_END
 
