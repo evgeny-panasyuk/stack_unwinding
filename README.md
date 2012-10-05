@@ -74,6 +74,56 @@ void world::add_person(person const& a_person) {
     // ...                                  // (3) other operations
 }
 ```
+Another example from Boost.ScopeExit manual [4]:
+```C++
+try {
+    File passwd("/etc/passwd");
+    BOOST_SCOPE_EXIT( (&passwd) ) {
+        passwd.close();
+    } BOOST_SCOPE_EXIT_END
+    // ...
+}
+catch(...) {
+    log("could not get user info");
+    throw;
+}
+```
+Using SCOPE_FAILURE it would became:
+```C++
+{
+    SCOPE_FAILURE(void) {
+        log("could not get user info");
+    } SCOPE_FAILURE_END
+
+    File passwd("/etc/passwd");
+
+    BOOST_SCOPE_EXIT( (&passwd) ) {
+        passwd.close();
+    } BOOST_SCOPE_EXIT_END
+
+    // ...
+}
+```
+Moreover, it is possible to extend this example: defer "flush" action, which may safely throw. This shows usage of SCOPE_SUCCESS:
+```C++
+{
+    SCOPE_FAILURE(void) {
+        log("could not get user info");
+    } SCOPE_FAILURE_END
+
+    File passwd("/etc/passwd");
+
+    SCOPE_SUCCESS( (&passwd) ) {
+        passwd.flush();
+    } SCOPE_SUCCESS_END
+
+    BOOST_SCOPE_EXIT( (&passwd) ) {
+        passwd.close();
+    } BOOST_SCOPE_EXIT_END
+
+    // ...
+}
+```
 Using of ScopeGuard idiom (committing/releasing by hands) becoming even more complicated in face of multiple scope exits: return, break, continue, etc - multiple committing/releasing should be used:
 ```C++
 void some_func()
