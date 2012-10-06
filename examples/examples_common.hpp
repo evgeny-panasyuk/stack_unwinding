@@ -72,4 +72,21 @@ public:
     }
 };
 
+template<typename T1> inline
+void suppress_unused_warning(const T1&){};
+template<typename T1,typename T2> inline
+void suppress_unused_warning(const T1&,const T2&){};
+template<typename T1,typename T2,typename T3> inline
+void suppress_unused_warning(const T1&,const T2&,const T3&){};
+template<typename T1,typename T2,typename T3,typename T4> inline
+void suppress_unused_warning(const T1&,const T2&,const T3&,const T4&){};
+template<typename T1,typename T2,typename T3,typename T4,typename T5> inline
+void suppress_unused_warning(const T1&,const T2&,const T3&,const T4&,const T5&){};
+template<typename T1,typename T2,typename T3,typename T4,typename T5,typename T6> inline
+void suppress_unused_warning(const T1&,const T2&,const T3&,const T4&,const T5&,const T6&){};
+template<typename T1,typename T2,typename T3,typename T4,typename T5,typename T6,typename T7> inline
+void suppress_unused_warning(const T1&,const T2&,const T3&,const T4&,const T5&,const T6&,const T7&){};
+
+
+
 #endif

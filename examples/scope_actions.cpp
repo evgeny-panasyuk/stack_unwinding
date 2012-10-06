@@ -29,9 +29,10 @@ int main(int,char *[])
         scope_action exit=make<scope_exit>(Print(" exit"));
         scope_action failure=make<scope_failure>(Print(" failure")); 
         scope_action success=make<scope_success>(Print(" success"));
-        throw 1;
 
-        (void)exit;(void)failure;(void)success; // unused warnings prevention
+        suppress_unused_warning(exit,failure,success);
+
+        throw 1;
     } catch(int){}
     {
         cout << "Case #2: normal exit" << endl;
@@ -39,7 +40,7 @@ int main(int,char *[])
         scope_action failure=make<scope_failure>(Print(" failure")); 
         scope_action success=make<scope_success>(Print(" success"));
 
-        (void)exit;(void)failure;(void)success; // unused warnings prevention
+        suppress_unused_warning(exit,failure,success);
     }
     return 0;
 }

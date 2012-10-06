@@ -25,7 +25,8 @@ struct ExptSwallower
         {
             FirstScoped a;
             SecondScoped b;
-            (void)a;(void)b; // unused warnings prevention
+
+            suppress_unused_warning(a,b);
         }catch(int){}
     }
 };
@@ -71,44 +72,42 @@ int main(int,char *[])
     try
     {
         cout << endl << "basic throw:" << endl;
-        DLikeScopeGuard fail;
+        DLikeScopeGuard fail; suppress_unused_warning(fail);
         throw 0;
-        (void)fail; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "fail in previous destructor:" << endl;
         DLikeScopeGuard fail;
         ThrowableDestructor d;
-        (void)d; // unused warnings prevention
+
+        suppress_unused_warning(d,fail);
     }catch(int){}
     try
     {
         cout << endl << "fail in next destructor:" << endl;
         ThrowableDestructor d;
         DLikeScopeGuard success;
-        (void)d;(void)success; // unused warnings prevention
+
+        suppress_unused_warning(d,success);
     }catch(int){}
     try
     {
         cout << endl << "ExptSwallower<DLikeScopeGuard,ThrowableDestructor> during throw:" << endl;
-        ExptSwallower<DLikeScopeGuard,ThrowableDestructor> fail;
+        ExptSwallower<DLikeScopeGuard,ThrowableDestructor> fail; suppress_unused_warning(fail);
         throw 0;
-        (void)fail; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "ExptSwallower<ThrowableDestructor,DLikeScopeGuard> during throw:" << endl;
-        ExptSwallower<ThrowableDestructor,DLikeScopeGuard> fail;
+        ExptSwallower<ThrowableDestructor,DLikeScopeGuard> fail; suppress_unused_warning(fail);
         throw 0;
-        (void)fail; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "ExptSwallower<DLikeScopeGuard,int> during throw:" << endl;
-        ExptSwallower<DLikeScopeGuard,int> success;
+        ExptSwallower<DLikeScopeGuard,int> success; suppress_unused_warning(success);
         throw 0;
-        (void)success; // unused warnings prevention
     }catch(int){}
     return 0;
 }

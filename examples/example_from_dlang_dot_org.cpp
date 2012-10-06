@@ -65,7 +65,7 @@ int main(int,char *[])
         scope_action f=make<scope_success>(Write("6"));
         scope_action g=make<scope_failure>(Write("7"));
 
-        (void)a;(void)b;(void)c;(void)d;(void)e;(void)f;(void)g; // unused warnings prevention
+        suppress_unused_warning(a,b,c,d,e,f,g);
     }
     catch(int){}
     std::cout << endl;

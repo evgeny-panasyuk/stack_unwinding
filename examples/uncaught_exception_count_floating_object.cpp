@@ -35,9 +35,8 @@ int main(int,char *[])
 {
     try
     {
-        DtorStuff d;
+        DtorStuff d; suppress_unused_warning(d);
         throw 1;
-        (void)d; // unused warnings prevention
     }
     catch(int) {}
 

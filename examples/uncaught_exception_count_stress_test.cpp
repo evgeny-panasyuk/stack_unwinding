@@ -8,6 +8,8 @@
 
 #include <stack_unwinding.hpp>
 
+#include "examples_common.hpp"
+
 using namespace std;
 
 vector<unsigned> exception_counts;
@@ -32,7 +34,8 @@ struct ExptSwallower
             ExpCountSaver p;
             ExptSwallower<n-1> a;
             throw 1;
-            (void)p;(void)a; // unused warnings prevention
+
+            suppress_unused_warning(p,a);
         }catch(int){}
     }
 };
@@ -47,7 +50,8 @@ int main(int,char *[])
     try
     {
         ExptSwallower<test_count> test;
-        (void)test; // unused warnings prevention
+
+        suppress_unused_warning(test);
     } catch(int) {}
     if(exception_counts.size()!=test_count)
         return 1;
