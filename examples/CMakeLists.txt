@@ -4,7 +4,8 @@ project(stack_unwinding_demo)
 enable_testing()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    #add_definitions(-Wall -Weffc++ -Wold-style-cast -Wctor-dtor-privacy -Winit-self -Wmissing-include-dirs -Wfloat-equal -Wshadow -Wpointer-arith -Wunreachable-code)#-Wuninitialized
+    #add_definitions(-Weffc++ -Wold-style-cast -Wctor-dtor-privacy -Wshadow -Wunreachable-code)#-Wuninitialized
+    add_definitions(-ftemplate-depth-16384 -Wall -Werror -Winit-self -Wmissing-include-dirs -Wfloat-equal -Wpointer-arith)
 elseif(MSVC)
     add_definitions("/W4" "/WX")
 endif()

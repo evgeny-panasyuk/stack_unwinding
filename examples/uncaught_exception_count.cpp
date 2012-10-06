@@ -33,6 +33,7 @@ struct ExptSwallower
         {
             FirstScoped a;
             SecondScoped b;
+            (void)a;(void)b; // unused warnings prevention
         }catch(int){}
     }
 };
@@ -44,6 +45,7 @@ int main(int,char *[])
     ExptSwallower<ExptSwallower<ExpCountPrinter> > c;
     ExptSwallower<ExptSwallower<ExptSwallower<ExpCountPrinter> > > d;
     ExptSwallower<ExptSwallower<ExptSwallower<ExptSwallower<ExpCountPrinter> > > > e;
+    (void)a;(void)b;(void)c;(void)d;(void)e; // unused warnings prevention
     return 0;
 }
 

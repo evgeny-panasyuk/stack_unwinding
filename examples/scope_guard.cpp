@@ -73,36 +73,42 @@ int main(int,char *[])
         cout << endl << "basic throw:" << endl;
         DLikeScopeGuard fail;
         throw 0;
+        (void)fail; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "fail in previous destructor:" << endl;
         DLikeScopeGuard fail;
         ThrowableDestructor d;
+        (void)d; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "fail in next destructor:" << endl;
         ThrowableDestructor d;
         DLikeScopeGuard success;
+        (void)d;(void)success; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "ExptSwallower<DLikeScopeGuard,ThrowableDestructor> during throw:" << endl;
         ExptSwallower<DLikeScopeGuard,ThrowableDestructor> fail;
         throw 0;
+        (void)fail; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "ExptSwallower<ThrowableDestructor,DLikeScopeGuard> during throw:" << endl;
         ExptSwallower<ThrowableDestructor,DLikeScopeGuard> fail;
         throw 0;
+        (void)fail; // unused warnings prevention
     }catch(int){}
     try
     {
         cout << endl << "ExptSwallower<DLikeScopeGuard,int> during throw:" << endl;
         ExptSwallower<DLikeScopeGuard,int> success;
         throw 0;
+        (void)success; // unused warnings prevention
     }catch(int){}
     return 0;
 }

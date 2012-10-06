@@ -47,6 +47,7 @@ int main(int,char *[])
     try
     {
         ExptSwallower<test_count> test;
+        (void)test; // unused warnings prevention
     } catch(int) {}
     if(exception_counts.size()!=test_count)
         return 1;
