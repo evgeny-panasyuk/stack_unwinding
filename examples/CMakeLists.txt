@@ -27,6 +27,7 @@ example(destructor_but_not_terminator)
 example(two_stage_destructor)
 example(uncaught_exception_count_floating_object)
 example(uncaught_exception_count_stress_test)
+example(FILE_defer_and_release)
 
 find_package( Boost 1.51.0 )
 if(Boost_FOUND)
