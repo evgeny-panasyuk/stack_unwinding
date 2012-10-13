@@ -13,7 +13,7 @@
 using namespace std;
 
 vector<unsigned> exception_counts;
-const unsigned test_count=1024;
+const unsigned test_count=500;
 
 struct ExpCountSaver
 {

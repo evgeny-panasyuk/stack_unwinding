@@ -5,7 +5,7 @@ enable_testing()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     #add_definitions(-Weffc++ -Wold-style-cast -Wctor-dtor-privacy -Wshadow -Wunreachable-code)#-Wuninitialized
-    add_definitions(-ftemplate-depth-16384 -Wall -Werror -Winit-self -Wmissing-include-dirs -Wfloat-equal -Wpointer-arith)
+    add_definitions(-Wall -Werror -Winit-self -Wmissing-include-dirs -Wfloat-equal -Wpointer-arith) # -ftemplate-depth-16384
 elseif(MSVC)
     add_definitions("/W4" "/WX")
 endif()
