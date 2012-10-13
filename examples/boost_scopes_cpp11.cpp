@@ -22,43 +22,43 @@ int main(int,char *[])
 {
     try
     {
-		int some_var=1;
+        int some_var=1;
         cout << "Case #1: stack unwinding" << endl;
         scope(exit)
-		{
-			cout << "exit " << some_var << endl;
-			++some_var;
-		};
+        {
+            cout << "exit " << some_var << endl;
+            ++some_var;
+        };
         scope(failure)
-		{
-			cout << "failure " << some_var  << endl;
-			++some_var;
-		};
+        {
+            cout << "failure " << some_var  << endl;
+            ++some_var;
+        };
         scope(success)
-		{
-			cout << "success " << some_var  << endl;
-			++some_var;
-		};
+        {
+            cout << "success " << some_var  << endl;
+            ++some_var;
+        };
         throw 1;
     } catch(int){}
     {
         int some_var=1;
         cout << "Case #2: normal exit" << endl;
         scope(exit)
-		{
-			cout << "exit " << some_var << endl;
-			++some_var;
-		};
+        {
+            cout << "exit " << some_var << endl;
+            ++some_var;
+        };
         scope(failure)
-		{
-			cout << "failure " << some_var  << endl;
-			++some_var;
-		};
+        {
+            cout << "failure " << some_var  << endl;
+            ++some_var;
+        };
         scope(success)
-		{
-			cout << "success " << some_var  << endl;
-			++some_var;
-		};
+        {
+            cout << "success " << some_var  << endl;
+            ++some_var;
+        };
     }
     return 0;
 }
