@@ -10,6 +10,9 @@ using namespace std;
 
 #ifdef BOOST_NO_LAMBDAS
 int main(int,char *[])
+{
+    return 0;
+}
 #else
 
 #define SCOPE_ALL_REF_exit BOOST_SCOPE_EXIT_ALL(&)
