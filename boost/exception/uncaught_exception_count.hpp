@@ -61,7 +61,7 @@ namespace boost
             unsigned char enter_state;
         public:
             uncaught_exception_count_latch()
-                : enter_state(unsigned char(uncaught_exception_count() & 1))
+                : enter_state(static_cast<unsigned char>(uncaught_exception_count() & 1))
             {
             }
             bool transitioned()
