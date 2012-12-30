@@ -26,7 +26,7 @@ DESTRUCTOR_BUT_NOT_TERMINATOR_OUT_OF_CLASS_DEF(DestructorOutOfClass)
     throw 2;
 }
 
-int main(int,char *[])
+int main()
 {
     try
     {

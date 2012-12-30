@@ -39,7 +39,7 @@ public:
     }
 };
 
-int main(int,char *[])
+int main()
 {
     try
     {

@@ -14,7 +14,7 @@
 
 using namespace std;
 
-int main(int,char *[])
+int main()
 {
     try
     {

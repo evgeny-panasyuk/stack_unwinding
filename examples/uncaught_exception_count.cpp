@@ -38,7 +38,7 @@ struct ExptSwallower
     }
 };
 
-int main(int,char *[])
+int main()
 {
     ExpCountPrinter a;
     ExptSwallower<ExpCountPrinter> b;

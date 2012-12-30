@@ -30,7 +30,7 @@ void func_throw(int i)
 {
     throw i;
 }
-int main(int,char *[])
+int main()
 {
 /*
     Refer http://dlang.org/statement.html#ScopeGuardStatement

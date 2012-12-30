@@ -63,7 +63,7 @@ public:
     }
 };
 
-int main(int,char *[])
+int main()
 {
     {
         cout  << "no exception:" << endl;

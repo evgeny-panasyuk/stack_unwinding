@@ -26,7 +26,7 @@ UNWINDING_AWARE_DESTRUCTOR_OUT_OF_CLASS_DEF(DestructorOutOfClass,unwinding)
     cout << "DestructorOutOfClass, unwinding: " << ( unwinding ? "is happening" : "is not happening" ) << endl;
 }
 
-int main(int,char *[])
+int main()
 {
     try
     {

@@ -69,7 +69,7 @@ void test()
     }
     catch(int i) { cout << i << endl; }
 }
-int main(int,char *[])
+int main()
 {
     test<RAII_Deferred>();
     test<RAII_Deferred_out_of_class>();

@@ -44,7 +44,7 @@ struct ExptSwallower<0>
 {
     ~ExptSwallower() {}
 };
-int main(int,char *[])
+int main()
 {
     exception_counts.reserve(test_count);
     try

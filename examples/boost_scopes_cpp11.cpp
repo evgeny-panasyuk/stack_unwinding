@@ -21,7 +21,7 @@ int main(int,char *[])
 
 #define scope(when) SCOPE_ALL_REF_##when
 
-int main(int,char *[])
+int main()
 {
     try
     {

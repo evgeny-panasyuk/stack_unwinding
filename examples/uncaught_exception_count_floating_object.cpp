@@ -1,6 +1,9 @@
+// Refer http://boost.2283326.n4.nabble.com/scope-exit-D-style-scope-failure-and-scope-success-in-C-tp4636441p4636477.html
+
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <memory>
 
 #include <stack_unwinding.hpp>
 
@@ -21,17 +24,17 @@ struct ExpCountPrinter
     }
 };
 
-ExpCountPrinter *global_ptr=0;
+auto_ptr<ExpCountPrinter> global;
 
 struct DtorStuff
 {
     ~DtorStuff()
     {
-        global_ptr=new ExpCountPrinter;
+        global.reset(new ExpCountPrinter);
     }
 };
 
-int main(int,char *[])
+int main()
 {
     try
     {
@@ -40,7 +43,7 @@ int main(int,char *[])
     }
     catch(int) {}
 
-    delete global_ptr;
+    global.reset();
 
     return 0;
 }
