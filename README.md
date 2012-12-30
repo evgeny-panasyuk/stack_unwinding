@@ -26,6 +26,8 @@ This library has example implementations of "scope(success)" and "scope(failure)
 ```
 
 Boost has "Scope Exit" library [4] which in examples shows using of commiting by hands.
+Approximately 14 of 16 BOOST_SCOPE_EXIT* examples in manual are in fact emulations of scope(failure) and scope(success).
+So, looks like in first place Boost.ScopeExit was introduced to simplify emulation of scope(failure) and scope(success) features.
 Some quote from Boost.ScopeExit manual [5]:
 ```
 Boost.ScopeExit is similar to scope(exit) feature built into the D programming language.
