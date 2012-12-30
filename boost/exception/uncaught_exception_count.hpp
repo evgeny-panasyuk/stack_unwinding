@@ -41,7 +41,7 @@ namespace boost
     }
     inline unsigned uncaught_exception_count()
     {
-        // Tested on {clang 3.2,GCC 3.4.6,GCC 4.1.2,GCC 4.4.6,GCC 4.4.7}x{x32,x64}
+        // Tested on {Clang 3.2,GCC 3.4.6,GCC 4.1.2,GCC 4.4.6,GCC 4.4.7}x{x32,x64}
         return *
         (
             static_cast<unsigned*>
@@ -61,12 +61,12 @@ namespace boost
             unsigned char enter_state;
         public:
             uncaught_exception_count_latch()
-                : enter_state(static_cast<unsigned char>(uncaught_exception_count() & 1))
+                : enter_state(static_cast<unsigned char>( uncaught_exception_count() & 1 ))
             {
             }
             bool transitioned()
             {
-                return enter_state != (uncaught_exception_count() & 1);
+                return enter_state != ( uncaught_exception_count() & 1 );
             }
     };
 #endif
