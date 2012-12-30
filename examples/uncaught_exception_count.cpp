@@ -2,7 +2,7 @@
 #include <ostream>
 #include <string>
 
-#include <stack_unwinding.hpp>
+#include <boost/exception/uncaught_exception_count.hpp>
 
 #include "examples_common.hpp"
 
@@ -12,7 +12,7 @@ struct ExpCountPrinter
 {
     ~ExpCountPrinter()
     {
-        cout << "uncaught_exception_count=" << stack_unwinding::uncaught_exception_count() << endl;
+        cout << "uncaught_exception_count=" << boost::uncaught_exception_count() << endl;
     }
 };
 

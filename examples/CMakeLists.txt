@@ -10,7 +10,11 @@ elseif(MSVC)
     add_definitions("/W4" "/WX")
 endif()
 
-include_directories("../")
+include_directories(
+    ../
+    ../standalone
+    ../wild_sutff
+)
 
 function(example example_name)
     add_executable(${example_name} ${example_name}.cpp)

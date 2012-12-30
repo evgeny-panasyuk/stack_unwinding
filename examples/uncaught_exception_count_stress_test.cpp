@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <functional>
 
-#include <stack_unwinding.hpp>
+#include <boost/exception/uncaught_exception_count.hpp>
 
 #include "examples_common.hpp"
 
@@ -19,7 +19,7 @@ struct ExpCountSaver
 {
     ~ExpCountSaver()
     {
-        exception_counts.push_back(stack_unwinding::uncaught_exception_count());
+        exception_counts.push_back(boost::uncaught_exception_count());
     }
 };
 
