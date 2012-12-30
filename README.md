@@ -276,6 +276,7 @@ Current library status: ALPHA
 * GCC 4.4.6, CentOS 5: tested on x32 and x64, default settings
 * GCC 4.4.7, MinGW: tested on x64, default settings
 * Clang 3.2, CentOS 5:  tested on x32 and x64, default settings
+* Live tests, 500 simultaneous uncaught exceptions: [GCC 4.3.5](http://ideone.com/s9ZXf2), [GCC 4.5.1](http://ideone.com/1ihqUw), [GCC 4.6.3](http://liveworkspace.org/code/2qmSso$0), [GCC 4.7.2](http://liveworkspace.org/code/dY0VD$0), [Clang 3.2](http://liveworkspace.org/code/49MaPk$0)
 
 About
 ======
