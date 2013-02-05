@@ -22,6 +22,10 @@ namespace boost
             return static_cast<To*>(from);
         }
     }
+
+    // uncaught_exception_count is a function similar to std::uncaught_exception from standard library,
+    // but instead of boolean result it returns unsigned int showing current count of uncaught exceptions.
+
 #if defined(_MSC_VER)
     namespace exception_detail
     {
@@ -50,6 +54,9 @@ namespace boost
     }
 #endif
 
+    // Within one scope uncaught_exception_count can be changed only by +1.
+    // uncaught_exception_count_latch is primitive which helps to determine such transition.
+    //     Internally it stores and compares only last bit of uncaught_exception_count value
 #ifdef BOOST_UNCAUGHT_EXCEPTION_COUNT_SUPPORTED
     class uncaught_exception_count_latch
     {
@@ -59,7 +66,7 @@ namespace boost
                 : enter_state(static_cast<unsigned char>( uncaught_exception_count() & 1 ))
             {
             }
-            bool transitioned()
+            bool transitioned() const
             {
                 return enter_state != ( uncaught_exception_count() & 1 );
             }
