@@ -14,7 +14,14 @@
 
 namespace boost
 {
-
+    namespace exception_detail
+    {
+        template<typename To> inline
+        To *unrelated_pointer_cast(void *from)
+        {
+            return static_cast<To*>(from);
+        }
+    }
 #if defined(_MSC_VER)
     namespace exception_detail
     {
@@ -23,15 +30,9 @@ namespace boost
     inline unsigned uncaught_exception_count()
     {
         // MSVC specific. Tested on {MSVC2005SP1,MSVC2008SP1,MSVC2010SP1,MSVC2012}x{x32,x64}.
-        return *
+        return *exception_detail::unrelated_pointer_cast<unsigned>
         (
-            static_cast<unsigned*>
-            (
-                static_cast<void*>
-                (
-                    exception_detail::_getptd() + (sizeof(void*)==8 ? 0x100 : 0x90) 
-                )
-            )
+            exception_detail::_getptd() + (sizeof(void*)==8 ? 0x100 : 0x90) 
         );
     }
 #elif defined(__GNUG__) || defined(__CLANG__)
@@ -42,15 +43,9 @@ namespace boost
     inline unsigned uncaught_exception_count()
     {
         // Tested on {Clang 3.2,GCC 3.4.6,GCC 4.1.2,GCC 4.4.6,GCC 4.4.7}x{x32,x64}
-        return *
+        return *exception_detail::unrelated_pointer_cast<unsigned>
         (
-            static_cast<unsigned*>
-            (
-                static_cast<void*>
-                (
-                    exception_detail::__cxa_get_globals() + (sizeof(void*)==8 ? 0x8 : 0x4)
-                )
-            )
+            exception_detail::__cxa_get_globals() + (sizeof(void*)==8 ? 0x8 : 0x4)
         );
     }
 #endif
