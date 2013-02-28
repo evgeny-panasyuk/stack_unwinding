@@ -266,7 +266,7 @@ References
 5. [Alexander Nasonov, Lorenzo Caminiti. Boost.ScopeExit. Note on scope(failure) and scope(success)](http://www.boost.org/doc/libs/1_51_0/libs/scope_exit/doc/html/scope_exit/alternatives.html#scope_exit.alternatives.the_d_programming_language)
 6. [Herb Sutter. Uncaught Exceptions](http://www.gotw.ca/gotw/047.htm)
 
-Current library status: ALPHA
+Current library status: BETA
 =============================
 
 * MSVC 2005, Windows 7: tested on x32 and x64, default settings
