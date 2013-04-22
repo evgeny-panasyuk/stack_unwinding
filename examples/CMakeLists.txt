@@ -13,7 +13,7 @@ endif()
 include_directories(
     ../
     ../standalone
-    ../wild_sutff
+    ../wild_stuff
 )
 
 function(example example_name)
